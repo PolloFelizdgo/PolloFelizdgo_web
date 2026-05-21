@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.section-title {
+    @apply text-4xl md:text-5xl font-extrabold text-red-600;
+}
+
+.section-subtitle {
+    @apply mt-4 text-gray-600 max-w-2xl mx-auto;
+}
+
+.card-soft {
+    @apply bg-white rounded-3xl shadow-md hover:shadow-2xl transition duration-300;
+}
