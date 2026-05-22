@@ -131,13 +131,13 @@ class HomeController extends Controller
                 'name' => 'Pollo Asado Entero',
                 'description' => 'Pollo entero sazonado con receta tradicional.',
                 'price' => '$199',
-                'image' => asset('images/menu/pollo-entero.jpg'),
+                'image' => asset('images/menu/platillo1.jpeg'),
             ],
             [
                 'name' => 'Medio Pollo',
                 'description' => 'Ideal para compartir con tortillas y salsa.',
                 'price' => '$109',
-                'image' => asset('images/menu/medio-pollo.jpg'),
+                'image' => asset('images/menu/platillo2.jpeg '),
             ],
             [
                 'name' => 'Combo Familiar',

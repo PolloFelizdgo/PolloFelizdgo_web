@@ -1,4 +1,4 @@
-<section id="sucursales" class="py-20 bg-white">
+<section id="sucursales" class="py-20 bg-white dark:bg-gray-900 transition-colors duration-300">
     <div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-14">
             <h2 class="section-title">Nuestras Sucursales</h2>
@@ -9,7 +9,7 @@
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             @foreach($branches as $branch)
-                <div class="bg-[#fff8f0] rounded-3xl shadow-md hover:shadow-2xl transition duration-300 overflow-hidden">
+                <div class="bg-[#fff8f0] dark:bg-gray-800 rounded-3xl shadow-md hover:shadow-2xl transition duration-300 overflow-hidden">
                     <button
                         type="button"
                         class="branch-image-trigger block w-full text-left"
@@ -24,10 +24,10 @@
                     </button>
 
                     <div class="p-5">
-                        <h3 class="text-xl font-bold text-red-600">{{ $branch['name'] }}</h3>
-                        <p class="text-sm text-gray-600 mt-2">{{ $branch['address'] }}</p>
-                        <p class="text-sm text-gray-700 mt-2"><strong>Tel:</strong> {{ $branch['phone'] }}</p>
-                        <p class="text-sm text-gray-700"><strong>Horario:</strong> {{ $branch['hours'] }}</p>
+                        <h3 class="text-xl font-bold text-red-600 dark:text-yellow-400">{{ $branch['name'] }}</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">{{ $branch['address'] }}</p>
+                        <p class="text-sm text-gray-700 dark:text-gray-200 mt-2"><strong>Tel:</strong> {{ $branch['phone'] }}</p>
+                        <p class="text-sm text-gray-700 dark:text-gray-200"><strong>Horario:</strong> {{ $branch['hours'] }}</p>
 
                         <div class="mt-4 rounded-xl overflow-hidden">
                             <iframe
@@ -61,12 +61,12 @@
             <button
                 type="button"
                 id="closeBranchImageModal"
-                class="absolute -top-4 -right-2 md:-top-5 md:-right-5 bg-white text-gray-900 rounded-full w-10 h-10 shadow-lg text-2xl font-bold hover:bg-gray-100 transition"
+                class="absolute -top-4 -right-2 md:-top-5 md:-right-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-full w-10 h-10 shadow-lg text-2xl font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition"
             >
                 ×
             </button>
 
-            <div class="bg-white rounded-3xl overflow-hidden shadow-2xl">
+            <div class="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-2xl transition-colors duration-300">
                 <img
                     id="branchModalImage"
                     src=""
@@ -74,7 +74,7 @@
                     class="w-full max-h-[80vh] object-cover"
                 >
                 <div class="p-4 md:p-6">
-                    <h3 id="branchModalTitle" class="text-2xl font-extrabold text-red-600"></h3>
+                    <h3 id="branchModalTitle" class="text-2xl font-extrabold text-red-600 dark:text-yellow-400"></h3>
                 </div>
             </div>
         </div>

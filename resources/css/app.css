@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 html {
     scroll-behavior: smooth;
@@ -9,13 +10,13 @@ body {
 }
 
 .section-title {
-    @apply text-4xl md:text-5xl font-extrabold text-red-600;
+    @apply text-4xl md:text-5xl font-extrabold text-red-600 dark:text-yellow-400;
 }
 
 .section-subtitle {
-    @apply mt-4 text-gray-600 max-w-2xl mx-auto;
+    @apply mt-4 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto;
 }
 
 .card-soft {
-    @apply bg-white rounded-3xl shadow-md hover:shadow-2xl transition duration-300;
+    @apply bg-white dark:bg-gray-900 rounded-3xl shadow-md hover:shadow-2xl transition duration-300;
 }
