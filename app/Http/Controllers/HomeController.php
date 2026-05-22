@@ -11,7 +11,7 @@ class HomeController extends Controller
         $branches = [
             [
                 'name' => 'Suc.Jardines',
-                'address' => 'Blvd. Francisco Villa 103, Jardines de Durango,34200 Durango, Dgo.',
+                'address' => 'Blvd. Francisco Villa 103, Jardines de Durango, 34200 Durango, Dgo.',
                 'phone' => '(618) 129 3730',
                 'hours' => '9:00 AM - 6:00 PM',
                 'image' => asset('images/jardines.jpeg'),
@@ -35,12 +35,11 @@ class HomeController extends Controller
             ],
             [
                 'name' => 'Suc. Lomas',
-                'address' => 'Loma Dorada, 34100 Durango, Durango, Dgo.',
+                'address' => 'Loma Dorada, 34100 Durango, Dgo.',
                 'phone' => '(618) 130 3197',
                 'hours' => '9:00 AM - 6:30 PM',
                 'image' => asset('images/lomas.jpg'),
                 'map' => 'https://www.google.com/maps/embed?pb=!3m2!1sen!2smx!4v1779466189040!5m2!1sen!2smx!6m8!1m7!1speL5yLTxD23Rm3PaYSjhNw!2m2!1d24.01472528595662!2d-104.6904498944229!3f198.11976574334292!4f-0.12387153436095844!5f0.7820865974627469',
-
             ],
             [
                 'name' => 'Suc.Domingo Arrieta',
@@ -76,38 +75,8 @@ class HomeController extends Controller
             ],
         ];
 
-        $menuItems = [
-            [
-                'name' => 'Pollo Asado Entero',
-                'description' => 'Pollo entero sazonado con receta tradicional.',
-                'price' => '$199',
-            ],
-            [
-                'name' => 'Medio Pollo',
-                'description' => 'Ideal para compartir con tortillas y salsa.',
-                'price' => '$109',
-            ],
-            [
-                'name' => 'Combo Familiar',
-                'description' => 'Pollo, tortillas, salsa, papas y refresco.',
-                'price' => '$289',
-            ],
-            [
-                'name' => 'Complementos',
-                'description' => 'Papas, ensalada, arroz y frijoles.',
-                'price' => 'Desde $45',
-            ],
-            [
-                'name' => 'Bebidas',
-                'description' => 'Refrescos y aguas frescas para acompañar.',
-                'price' => 'Desde $25',
-            ],
-            [
-                'name' => 'Paquete Ejecutivo',
-                'description' => 'Ideal para una comida rápida y completa.',
-                'price' => '$149',
-            ],
-        ];
+        $menuItems = $this->getMenuItems();
+        $featuredMenuItems = array_slice($menuItems, 0, 6);
 
         $promotions = [
             [
@@ -127,6 +96,145 @@ class HomeController extends Controller
             ],
         ];
 
-        return view('home', compact('branches', 'menuItems', 'promotions'));
+        $heroSlides = [
+            [
+                'image' => asset('images/portada.jpg'),
+                'title' => 'El sabor que une a la familia',
+                'text' => 'Disfruta del auténtico sabor de Pollo Feliz con la mejor calidad, recetas tradicionales y una experiencia deliciosa para toda la familia.',
+            ],
+            [
+                'image' => asset('images/jardines.jpeg'),
+                'title' => 'Tradición en cada bocado',
+                'text' => 'Recetas únicas, pollo asado de calidad y el mejor servicio para compartir grandes momentos.',
+            ],
+            [
+                'image' => asset('images/fidel.jpeg'),
+                'title' => 'Promociones y sabor todos los días',
+                'text' => 'Encuentra tus sucursales favoritas y disfruta promociones especiales para toda la familia.',
+            ],
+        ];
+
+        return view('home', compact('branches', 'featuredMenuItems', 'promotions', 'heroSlides'));
+    }
+
+    public function menu(): View
+    {
+        $menuItems = $this->getMenuItems();
+
+        return view('menu', compact('menuItems'));
+    }
+
+    private function getMenuItems(): array
+    {
+        return [
+            [
+                'name' => 'Pollo Asado Entero',
+                'description' => 'Pollo entero sazonado con receta tradicional.',
+                'price' => '$199',
+                'image' => asset('images/menu/pollo-entero.jpg'),
+            ],
+            [
+                'name' => 'Medio Pollo',
+                'description' => 'Ideal para compartir con tortillas y salsa.',
+                'price' => '$109',
+                'image' => asset('images/menu/medio-pollo.jpg'),
+            ],
+            [
+                'name' => 'Combo Familiar',
+                'description' => 'Pollo, tortillas, salsa, papas y refresco.',
+                'price' => '$289',
+                'image' => asset('images/menu/combo-familiar.jpg'),
+            ],
+            [
+                'name' => 'Complementos',
+                'description' => 'Papas, ensalada, arroz y frijoles.',
+                'price' => 'Desde $45',
+                'image' => asset('images/menu/complementos.jpg'),
+            ],
+            [
+                'name' => 'Bebidas',
+                'description' => 'Refrescos y aguas frescas para acompañar.',
+                'price' => 'Desde $25',
+                'image' => asset('images/menu/bebidas.jpg'),
+            ],
+            [
+                'name' => 'Paquete Ejecutivo',
+                'description' => 'Ideal para una comida rápida y completa.',
+                'price' => '$149',
+                'image' => asset('images/menu/paquete-ejecutivo.jpg'),
+            ],
+            [
+                'name' => 'Combo Infantil',
+                'description' => 'Porción ideal para los pequeños con bebida incluida.',
+                'price' => '$99',
+                'image' => asset('images/menu/combo-infantil.jpg'),
+            ],
+            [
+                'name' => 'Papas Especiales',
+                'description' => 'Papas sazonadas crujientes y deliciosas.',
+                'price' => '$59',
+                'image' => asset('images/menu/papas-especiales.jpg'),
+            ],
+            [
+                'name' => 'Complementos',
+                'description' => 'Papas, ensalada, arroz y frijoles.',
+                'price' => 'Desde $45',
+                'image' => asset('images/menu/complementos.jpg'),
+            ],
+            [
+                'name' => 'Bebidas',
+                'description' => 'Refrescos y aguas frescas para acompañar.',
+                'price' => 'Desde $25',
+                'image' => asset('images/menu/bebidas.jpg'),
+            ],
+            [
+                'name' => 'Paquete Ejecutivo',
+                'description' => 'Ideal para una comida rápida y completa.',
+                'price' => '$149',
+                'image' => asset('images/menu/paquete-ejecutivo.jpg'),
+            ],
+            [
+                'name' => 'Combo Infantil',
+                'description' => 'Porción ideal para los pequeños con bebida incluida.',
+                'price' => '$99',
+                'image' => asset('images/menu/combo-infantil.jpg'),
+            ],
+            [
+                'name' => 'Papas Especiales',
+                'description' => 'Papas sazonadas crujientes y deliciosas.',
+                'price' => '$59',
+                'image' => asset('images/menu/papas-especiales.jpg'),
+            ],
+            [
+                'name' => 'Complementos',
+                'description' => 'Papas, ensalada, arroz y frijoles.',
+                'price' => 'Desde $45',
+                'image' => asset('images/menu/complementos.jpg'),
+            ],
+            [
+                'name' => 'Bebidas',
+                'description' => 'Refrescos y aguas frescas para acompañar.',
+                'price' => 'Desde $25',
+                'image' => asset('images/menu/bebidas.jpg'),
+            ],
+            [
+                'name' => 'Paquete Ejecutivo',
+                'description' => 'Ideal para una comida rápida y completa.',
+                'price' => '$149',
+                'image' => asset('images/menu/paquete-ejecutivo.jpg'),
+            ],
+            [
+                'name' => 'Combo Infantil',
+                'description' => 'Porción ideal para los pequeños con bebida incluida.',
+                'price' => '$99',
+                'image' => asset('images/menu/combo-infantil.jpg'),
+            ],
+            [
+                'name' => 'Papas Especiales',
+                'description' => 'Papas sazonadas crujientes y deliciosas.',
+                'price' => '$59',
+                'image' => asset('images/menu/papas-especiales.jpg'),
+            ],
+        ];
     }
 }
