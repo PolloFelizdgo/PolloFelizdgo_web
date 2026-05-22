@@ -10,11 +10,11 @@
                 Tradición y sabor
             </p>
 
-            <h1 class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-extrabold leading-tight text-gray-900 dark:text-white transition-colors duration-300">
+            <h1 id="heroTitle" class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-extrabold leading-tight text-gray-900 dark:text-white transition-colors duration-300">
                 {{ $heroSlides[0]['title'] ?? 'El sabor que une a la familia' }}
             </h1>
 
-            <p class="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 transition-colors duration-300">
+            <p id="heroDescription" class="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl mx-auto lg:mx-0 transition-colors duration-300">
                 {{ $heroSlides[0]['text'] ?? 'Disfruta del auténtico sabor de Pollo Feliz con la mejor calidad y tradición.' }}
             </p>
 
@@ -50,6 +50,8 @@
                         <div
                             class="hero-slide {{ $index === 0 ? 'block' : 'hidden' }}"
                             data-slide-index="{{ $index }}"
+                            data-title="{{ $slide['title'] }}"
+                            data-text="{{ $slide['text'] }}"
                         >
                             <button
                                 type="button"

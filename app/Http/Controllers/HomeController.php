@@ -8,6 +8,7 @@ class HomeController extends Controller
 {
     public function index(): View
     {
+        // Datos de sucursales para seccion de ubicaciones en home.
         $branches = [
             [
                 'name' => 'Suc.Jardines',
@@ -75,9 +76,11 @@ class HomeController extends Controller
             ],
         ];
 
+        // Catalogo completo y version resumida para cards destacadas en home.
         $menuItems = $this->getMenuItems();
         $featuredMenuItems = array_slice($menuItems, 0, 6);
 
+        // Promociones destacadas de la landing.
         $promotions = [
             [
                 'title' => 'Martes Familiar',
@@ -96,6 +99,7 @@ class HomeController extends Controller
             ],
         ];
 
+        // Slides para hero principal (imagen, titulo y descripcion).
         $heroSlides = [
             [
                 'image' => asset('images/portada.jpg'),
@@ -103,7 +107,7 @@ class HomeController extends Controller
                 'text' => 'Disfruta del auténtico sabor de Pollo Feliz con la mejor calidad, recetas tradicionales y una experiencia deliciosa para toda la familia.',
             ],
             [
-                'image' => asset('images/jardines.jpeg'),
+                'image' => asset('images/fidel.jpeg'),
                 'title' => 'Tradición en cada bocado',
                 'text' => 'Recetas únicas, pollo asado de calidad y el mejor servicio para compartir grandes momentos.',
             ],
@@ -119,6 +123,7 @@ class HomeController extends Controller
 
     public function menu(): View
     {
+        // Vista de menu completo con todo el catalogo.
         $menuItems = $this->getMenuItems();
 
         return view('menu', compact('menuItems'));
@@ -126,6 +131,7 @@ class HomeController extends Controller
 
     private function getMenuItems(): array
     {
+        // Fuente central de productos para home y pagina de menu.
         return [
             [
                 'name' => 'Pollo Asado Entero',
