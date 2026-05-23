@@ -149,8 +149,8 @@ class HomeController extends Controller
 
     public function about(): View
     {
-        // Vista dedicada a la historia, vision y mision de la empresa.
-        // Puedes reemplazar estas rutas por imagenes corporativas nuevas.
+        // Edita esta seccion si quieres cambiar el contenido de la pagina /acerca.
+        // Cada imagen apunta a un archivo dentro de public/images.
         $aboutImages = [
             'hero' => asset('images/portada.jpg'),
             'history' => asset('images/jardines.jpeg'),
@@ -158,7 +158,8 @@ class HomeController extends Controller
             'vision' => asset('images/santiago.jpg'),
         ];
 
-        // Linea de tiempo corporativa: puedes cambiar anio, titulo y descripcion.
+        // Linea de tiempo corporativa.
+        // Edita year, title, description e image para actualizar los hitos.
         $timeline = [
             [
                 'year' => '2004',
@@ -186,7 +187,8 @@ class HomeController extends Controller
             ],
         ];
 
-        // Valores institucionales: icon puede ser emoji o texto corto.
+        // Tarjetas de valores institucionales.
+        // Cambia title y description para reflejar otro mensaje de marca.
         $values = [
             [
                 'icon' => '🤝',

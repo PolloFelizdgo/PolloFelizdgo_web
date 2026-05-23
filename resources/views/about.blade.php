@@ -140,9 +140,15 @@
 
                     <div class="space-y-8">
                         @foreach($timeline as $milestone)
-                            <article class="reveal-on-scroll opacity-100 translate-y-0 transition-all duration-700 grid md:grid-cols-2 gap-6 md:gap-10 items-center">
+                            <article
+                                class="reveal-on-scroll opacity-100 translate-y-0 transition-all duration-700 grid md:grid-cols-2 gap-6 md:gap-10 items-center"
+                                data-preview-title="{{ $milestone['title'] }}"
+                                data-preview-year="{{ $milestone['year'] }}"
+                                data-preview-image="{{ $milestone['image'] }}"
+                                data-preview-description="{{ $milestone['description'] }}"
+                            >
                                 @if($loop->odd)
-                                    <div class="bg-white dark:bg-gray-900 rounded-3xl border border-yellow-100 dark:border-gray-800 shadow-xl overflow-hidden">
+                                    <button type="button" class="history-preview-trigger block w-full text-left bg-white dark:bg-gray-900 rounded-3xl border border-yellow-100 dark:border-gray-800 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition duration-300">
                                         <img src="{{ $milestone['image'] }}" alt="{{ $milestone['title'] }}" class="w-full h-48 object-cover">
                                         <div class="p-6">
                                             <div class="flex items-center gap-3">
@@ -151,7 +157,7 @@
                                             </div>
                                             <p class="mt-4 text-gray-600 dark:text-gray-300 leading-relaxed">{{ $milestone['description'] }}</p>
                                         </div>
-                                    </div>
+                                    </button>
 
                                     <div class="relative hidden md:block">
                                         <span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-4 border-white dark:border-gray-900 bg-red-600 dark:bg-yellow-400 shadow-md"></span>
@@ -161,7 +167,7 @@
                                         <span class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-4 border-white dark:border-gray-900 bg-red-600 dark:bg-yellow-400 shadow-md"></span>
                                     </div>
 
-                                    <div class="bg-white dark:bg-gray-900 rounded-3xl border border-yellow-100 dark:border-gray-800 shadow-xl overflow-hidden">
+                                    <button type="button" class="history-preview-trigger block w-full text-left bg-white dark:bg-gray-900 rounded-3xl border border-yellow-100 dark:border-gray-800 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition duration-300">
                                         <img src="{{ $milestone['image'] }}" alt="{{ $milestone['title'] }}" class="w-full h-48 object-cover">
                                         <div class="p-6">
                                             <div class="flex items-center gap-3">
@@ -170,10 +176,41 @@
                                             </div>
                                             <p class="mt-4 text-gray-600 dark:text-gray-300 leading-relaxed">{{ $milestone['description'] }}</p>
                                         </div>
-                                    </div>
+                                    </button>
                                 @endif
                             </article>
                         @endforeach
+                    </div>
+                </div>
+
+                <div
+                    id="historyPreviewModal"
+                    class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 px-4 py-8 opacity-0 transition-opacity duration-300"
+                >
+                    <div id="historyPreviewPanel" class="relative max-w-4xl w-full scale-95 opacity-0 transition duration-300 ease-out">
+                        <button
+                            type="button"
+                            id="closeHistoryPreviewModal"
+                            class="absolute -top-4 -right-2 md:-top-5 md:-right-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-full w-10 h-10 shadow-lg text-2xl font-bold hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                        >
+                            ×
+                        </button>
+
+                        <div class="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-2xl transition-colors duration-300">
+                            <img
+                                id="historyPreviewImage"
+                                src=""
+                                alt=""
+                                class="w-full max-h-[65vh] object-cover"
+                            >
+                            <div class="p-5 md:p-6">
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <span id="historyPreviewYear" class="inline-flex items-center justify-center min-w-16 h-9 px-3 rounded-full bg-red-600 text-white font-bold text-sm"></span>
+                                    <h3 id="historyPreviewTitle" class="text-2xl md:text-3xl font-extrabold text-red-600 dark:text-yellow-400"></h3>
+                                </div>
+                                <p id="historyPreviewDescription" class="mt-4 text-gray-600 dark:text-gray-300 leading-relaxed"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

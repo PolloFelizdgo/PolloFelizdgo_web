@@ -12,6 +12,7 @@ class VacancyController extends Controller
 {
     public function index(): View
     {
+        // Lista solo vacantes activas para la pagina publica.
         $vacancies = Vacancy::query()
             ->where('is_active', true)
             ->orderByDesc('published_at')
@@ -23,6 +24,7 @@ class VacancyController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // Valida el formulario de alta de vacantes antes de guardarlo.
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'department' => ['required', 'string', 'max:255'],
@@ -45,6 +47,7 @@ class VacancyController extends Controller
         $imagePath = null;
 
         if ($request->hasFile('vacancy_image')) {
+            // Guarda la imagen dentro de public/uploads/vacancies.
             $directory = public_path('uploads/vacancies');
 
             if (! is_dir($directory)) {
@@ -72,6 +75,7 @@ class VacancyController extends Controller
             'published_at' => now(),
         ]);
 
+        // Regresa al listado con mensaje de exito.
         return redirect()
             ->route('vacancies.index')
             ->with('status', 'Vacante publicada correctamente.');

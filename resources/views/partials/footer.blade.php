@@ -31,6 +31,7 @@
                     <li><a href="{{ route('home') }}#menu" class="hover:text-yellow-400">Menú</a></li>
                     <li><a href="{{ route('home') }}#promociones" class="hover:text-yellow-400">Promociones</a></li>
                     <li><a href="{{ route('home') }}#acerca" class="hover:text-yellow-400">Acerca de</a></li>
+                    <li><a href="https://facturacion.galasistemas.com/" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400">Factura</a></li>
                     <li><a href="{{ route('vacancies.index') }}" class="hover:text-yellow-400">Bolsa de trabajo</a></li>
                     <li><a href="{{ route('home') }}#contacto" class="hover:text-yellow-400">Contáctanos</a></li>
                 </ul>

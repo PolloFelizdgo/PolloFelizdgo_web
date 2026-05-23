@@ -308,6 +308,130 @@ const initTestimonialCarousel = () => {
 
 initTestimonialCarousel();
 
+const initHistoryPreview = () => {
+    const triggers = Array.from(document.querySelectorAll('.history-preview-trigger'));
+    const modal = document.getElementById('historyPreviewModal');
+    const modalPanel = document.getElementById('historyPreviewPanel');
+    const modalImage = document.getElementById('historyPreviewImage');
+    const modalTitle = document.getElementById('historyPreviewTitle');
+    const modalYear = document.getElementById('historyPreviewYear');
+    const modalDescription = document.getElementById('historyPreviewDescription');
+    const closeButton = document.getElementById('closeHistoryPreviewModal');
+
+    if (!triggers.length || !modal || !modalPanel || !modalImage || !modalTitle || !modalYear || !modalDescription) {
+        return;
+    }
+
+    let closeTimeoutId = null;
+
+    const closeModal = () => {
+        window.clearTimeout(closeTimeoutId);
+        modal.classList.add('opacity-0');
+
+        if (modalPanel) {
+            modalPanel.classList.add('scale-95', 'opacity-0');
+            modalPanel.classList.remove('scale-100', 'opacity-100');
+        }
+
+        closeTimeoutId = window.setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+
+        document.body.classList.remove('overflow-hidden');
+    };
+
+    const openModal = (trigger) => {
+        const previewSource = trigger?.dataset?.previewImage
+            ? trigger
+            : trigger?.closest?.('[data-preview-image]');
+
+        const imageSrc = previewSource?.dataset?.previewImage || '';
+        const title = previewSource?.dataset?.previewTitle || 'Historia';
+        const year = previewSource?.dataset?.previewYear || '';
+        const description = previewSource?.dataset?.previewDescription || '';
+
+        if (!imageSrc) {
+            return;
+        }
+
+        modalImage.src = imageSrc;
+        modalImage.alt = title;
+        modalTitle.textContent = title;
+        modalYear.textContent = year;
+        modalDescription.textContent = description;
+
+        window.clearTimeout(closeTimeoutId);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+
+        window.setTimeout(() => {
+            modal.classList.remove('opacity-0');
+
+            if (modalPanel) {
+                modalPanel.classList.remove('scale-95', 'opacity-0');
+                modalPanel.classList.add('scale-100', 'opacity-100');
+            }
+        }, 10);
+    };
+
+    window.openHistoryPreview = (payload) => {
+        const imageSrc = payload?.image || '';
+        const title = payload?.title || 'Historia';
+        const year = payload?.year || '';
+        const description = payload?.description || '';
+
+        if (!imageSrc) {
+            return;
+        }
+
+        modalImage.src = imageSrc;
+        modalImage.alt = title;
+        modalTitle.textContent = title;
+        modalYear.textContent = year;
+        modalDescription.textContent = description;
+
+        window.clearTimeout(closeTimeoutId);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+
+        window.setTimeout(() => {
+            modal.classList.remove('opacity-0');
+
+            if (modalPanel) {
+                modalPanel.classList.remove('scale-95', 'opacity-0');
+                modalPanel.classList.add('scale-100', 'opacity-100');
+            }
+        }, 10);
+    };
+
+    window.closeHistoryPreview = closeModal;
+
+    triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => openModal(trigger));
+    });
+
+    if (closeButton) {
+        closeButton.addEventListener('click', closeModal);
+    }
+
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+};
+
+initHistoryPreview();
+
 const initRevealOnScroll = () => {
     const items = Array.from(document.querySelectorAll('.reveal-on-scroll'));
 
