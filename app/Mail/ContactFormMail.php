@@ -20,7 +20,7 @@ class ContactFormMail extends Mailable
         $fullName = trim(($this->contactData['name'] ?? '').' '.($this->contactData['last_name'] ?? ''));
         $logoPath = public_path('images/logo.png');
         $logoUrl = file_exists($logoPath) ? asset('images/logo.png') : null;
-        $logoCid = file_exists($logoPath) ? $this->embed($logoPath) : null;
+        $logoCid = null;
         $brandName = (string) config('app.name', 'Pollo Feliz');
 
         return $this

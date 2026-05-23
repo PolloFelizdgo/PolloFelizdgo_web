@@ -196,3 +196,145 @@ const initHeroSlider = () => {
 };
 
 initHeroSlider();
+
+const initTestimonialCarousel = () => {
+    const carousel = document.querySelector('.testimonial-carousel');
+
+    if (!carousel) {
+        return;
+    }
+
+    const track = carousel.querySelector('.testimonial-track');
+    const slides = Array.from(carousel.querySelectorAll('.testimonial-slide'));
+    const prevButton = carousel.querySelector('.testimonial-prev');
+    const nextButton = carousel.querySelector('.testimonial-next');
+    const dotsContainer = carousel.querySelector('.testimonial-dots');
+
+    if (!track || !slides.length || !dotsContainer) {
+        return;
+    }
+
+    let currentIndex = 0;
+    let autoPlayId = null;
+
+    const updateDots = () => {
+        dotsContainer.innerHTML = '';
+
+        slides.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.setAttribute('aria-label', `Ir al testimonio ${index + 1}`);
+            dot.className = 'testimonial-dot h-2.5 rounded-full transition-all duration-300';
+            dot.classList.add(index === currentIndex ? 'w-8 bg-red-600 dark:bg-yellow-400' : 'w-2.5 bg-gray-300 dark:bg-gray-600');
+
+            dot.addEventListener('click', () => {
+                showSlide(index);
+                restartAutoPlay();
+            });
+
+            dotsContainer.appendChild(dot);
+        });
+    };
+
+    const showSlide = (index) => {
+        const total = slides.length;
+        currentIndex = (index + total) % total;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+        const dots = Array.from(dotsContainer.querySelectorAll('.testimonial-dot'));
+        dots.forEach((dot, dotIndex) => {
+            dot.classList.toggle('w-8', dotIndex === currentIndex);
+            dot.classList.toggle('bg-red-600', dotIndex === currentIndex);
+            dot.classList.toggle('dark:bg-yellow-400', dotIndex === currentIndex);
+            dot.classList.toggle('w-2.5', dotIndex !== currentIndex);
+            dot.classList.toggle('bg-gray-300', dotIndex !== currentIndex);
+            dot.classList.toggle('dark:bg-gray-600', dotIndex !== currentIndex);
+        });
+    };
+
+    const nextSlide = () => showSlide(currentIndex + 1);
+    const prevSlide = () => showSlide(currentIndex - 1);
+
+    const restartAutoPlay = () => {
+        if (autoPlayId) {
+            window.clearInterval(autoPlayId);
+        }
+
+        autoPlayId = window.setInterval(nextSlide, 6500);
+    };
+
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            prevSlide();
+            restartAutoPlay();
+        });
+    }
+
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            nextSlide();
+            restartAutoPlay();
+        });
+    }
+
+    carousel.addEventListener('mouseenter', () => {
+        if (autoPlayId) {
+            window.clearInterval(autoPlayId);
+        }
+    });
+
+    carousel.addEventListener('mouseleave', restartAutoPlay);
+
+    document.addEventListener('keydown', (event) => {
+        if (!carousel.matches(':hover') && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
+            return;
+        }
+
+        if (event.key === 'ArrowLeft') {
+            prevSlide();
+            restartAutoPlay();
+        }
+
+        if (event.key === 'ArrowRight') {
+            nextSlide();
+            restartAutoPlay();
+        }
+    });
+
+    updateDots();
+    showSlide(0);
+    restartAutoPlay();
+};
+
+initTestimonialCarousel();
+
+const initRevealOnScroll = () => {
+    const items = Array.from(document.querySelectorAll('.reveal-on-scroll'));
+
+    if (!items.length) {
+        return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+        items.forEach((item) => {
+            item.classList.remove('opacity-0', 'translate-y-6');
+            item.classList.add('opacity-100', 'translate-y-0');
+        });
+
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries, currentObserver) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.remove('opacity-0', 'translate-y-6');
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                currentObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    items.forEach((item) => observer.observe(item));
+};
+
+initRevealOnScroll();

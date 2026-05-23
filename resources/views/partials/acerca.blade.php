@@ -19,6 +19,16 @@
             <p class="mt-4 text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
                 Nuestro compromiso es brindar calidad, sabor y excelente servicio en cada visita, creando momentos memorables alrededor de la mesa.
             </p>
+
+            <div class="mt-8">
+                <a
+                    href="{{ route('about') }}"
+                    class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-7 py-3 rounded-full shadow-lg transition duration-300"
+                >
+                    Saber mas
+                    <span>→</span>
+                </a>
+            </div>
         </div>
     </div>
 </section>

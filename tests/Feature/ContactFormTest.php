@@ -30,4 +30,19 @@ class ContactFormTest extends TestCase
                 && $mail->contactData['name'] === $payload['name'];
         });
     }
+
+    public function test_contact_mailable_can_be_rendered(): void
+    {
+        $mail = new ContactFormMail([
+            'name' => 'Juan',
+            'last_name' => 'Perez',
+            'email' => 'juan@example.com',
+            'phone' => '6181234567',
+            'message' => 'Mensaje de prueba para validar renderizado del correo.',
+        ]);
+
+        $html = $mail->render();
+
+        $this->assertStringContainsString('Nuevo mensaje de contacto', $html);
+    }
 }

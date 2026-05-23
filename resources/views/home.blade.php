@@ -25,6 +25,7 @@
     @include('partials.surcusales')
     @include('partials.menu')
     @include('partials.promociones')
+    @include('partials.confianza')
     @include('partials.acerca')
     @include('partials.contacto')
     @include('partials.footer')

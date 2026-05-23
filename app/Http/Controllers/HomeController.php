@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vacancy;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -83,19 +84,29 @@ class HomeController extends Controller
         // Promociones destacadas de la landing.
         $promotions = [
             [
-                'title' => 'Martes Familiar',
-                'description' => '2 pollos enteros con complemento especial para compartir.',
-                'price' => '$349',
+                'title' => 'Lunes de oficina',
+                'description' => 'Combo individual con bebida a precio especial para iniciar la semana.',
+                'price' => '$129',
             ],
             [
-                'title' => 'Combo de la Casa',
-                'description' => '1 pollo + papas grandes + refresco familiar.',
-                'price' => '$249',
+                'title' => 'Promoción Miércoles',
+                'description' => '2x1 en complementos seleccionados: papas, ensalada o arroz.',
+                'price' => '2x1',
             ],
             [
-                'title' => 'Promo Fin de Semana',
-                'description' => 'Descuento especial en combos familiares seleccionados.',
-                'price' => '15% OFF',
+                'title' => 'Jueves estudiantil',
+                'description' => 'Descuento especial en combo individual mostrando credencial vigente.',
+                'price' => '10% OFF',
+            ],
+            [
+                'title' => 'Viernes de combo familiar',
+                'description' => 'Pollo, complementos y refresco grande en paquete con precio cerrado.',
+                'price' => '$299',
+            ],
+            [
+                'title' => 'Sábado de sucursal',
+                'description' => 'Promoción especial exclusiva por ubicación, válida solo en sucursal participante.',
+                'price' => 'Desde $99',
             ],
         ];
 
@@ -118,7 +129,14 @@ class HomeController extends Controller
             ],
         ];
 
-        return view('home', compact('branches', 'featuredMenuItems', 'promotions', 'heroSlides'));
+        $latestVacancies = Vacancy::query()
+            ->where('is_active', true)
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get();
+
+        return view('home', compact('branches', 'featuredMenuItems', 'promotions', 'heroSlides', 'latestVacancies'));
     }
 
     public function menu(): View
@@ -129,6 +147,72 @@ class HomeController extends Controller
         return view('menu', compact('menuItems'));
     }
 
+    public function about(): View
+    {
+        // Vista dedicada a la historia, vision y mision de la empresa.
+        // Puedes reemplazar estas rutas por imagenes corporativas nuevas.
+        $aboutImages = [
+            'hero' => asset('images/portada.jpg'),
+            'history' => asset('images/jardines.jpeg'),
+            'mission' => asset('images/fidel.jpeg'),
+            'vision' => asset('images/santiago.jpg'),
+        ];
+
+        // Linea de tiempo corporativa: puedes cambiar anio, titulo y descripcion.
+        $timeline = [
+            [
+                'year' => '2004',
+                'title' => 'Inicio de operaciones',
+                'description' => 'Nace Pollo Feliz en Durango con una propuesta centrada en sabor tradicional y atencion cercana.',
+                'image' => asset('images/jardines.jpeg'),
+            ],
+            [
+                'year' => '2010',
+                'title' => 'Expansion regional',
+                'description' => 'Se consolida la apertura de nuevas sucursales para atender mas zonas de la ciudad.',
+                'image' => asset('images/fidel.jpeg'),
+            ],
+            [
+                'year' => '2018',
+                'title' => 'Estandarizacion operativa',
+                'description' => 'Se fortalecen procesos de calidad, servicio y capacitacion para todo el equipo.',
+                'image' => asset('images/sep.jpg'),
+            ],
+            [
+                'year' => '2026',
+                'title' => 'Innovacion continua',
+                'description' => 'Se integran mejoras en experiencia digital, comunicacion de marca y servicio al cliente.',
+                'image' => asset('images/portada.jpg'),
+            ],
+        ];
+
+        // Valores institucionales: icon puede ser emoji o texto corto.
+        $values = [
+            [
+                'icon' => '🤝',
+                'title' => 'Servicio cercano',
+                'description' => 'Atendemos a cada cliente con respeto, rapidez y calidez.',
+            ],
+            [
+                'icon' => '⭐',
+                'title' => 'Calidad constante',
+                'description' => 'Cuidamos ingredientes, preparacion y presentacion en cada pedido.',
+            ],
+            [
+                'icon' => '🔥',
+                'title' => 'Pasion por el sabor',
+                'description' => 'Mantenemos el sazón tradicional que distingue a la marca.',
+            ],
+            [
+                'icon' => '📈',
+                'title' => 'Mejora continua',
+                'description' => 'Evolucionamos procesos y experiencia para superar expectativas.',
+            ],
+        ];
+
+        return view('about', compact('aboutImages', 'timeline', 'values'));
+    }
+
     private function getMenuItems(): array
     {
         // Fuente central de productos para home y pagina de menu.
@@ -137,110 +221,122 @@ class HomeController extends Controller
                 'name' => 'Pollo Asado Entero',
                 'description' => 'Pollo entero sazonado con receta tradicional.',
                 'price' => '$199',
-                'image' => asset('images/menu/platillo1.jpeg'),
+                'image' => $this->menuImage('platillo1.jpeg'),
             ],
             [
                 'name' => 'Medio Pollo',
                 'description' => 'Ideal para compartir con tortillas y salsa.',
                 'price' => '$109',
-                'image' => asset('images/menu/platillo2.jpeg '),
+                'image' => $this->menuImage('platillo2.jpeg'),
             ],
             [
                 'name' => 'Combo Familiar',
                 'description' => 'Pollo, tortillas, salsa, papas y refresco.',
                 'price' => '$289',
-                'image' => asset('images/menu/combo-familiar.jpg'),
+                'image' => $this->menuImage('combo-familiar.jpg'),
             ],
             [
                 'name' => 'Complementos',
                 'description' => 'Papas, ensalada, arroz y frijoles.',
                 'price' => 'Desde $45',
-                'image' => asset('images/menu/complementos.jpg'),
+                'image' => $this->menuImage('complementos.jpg'),
             ],
             [
                 'name' => 'Bebidas',
                 'description' => 'Refrescos y aguas frescas para acompañar.',
                 'price' => 'Desde $25',
-                'image' => asset('images/menu/bebidas.jpg'),
+                'image' => $this->menuImage('bebidas.jpg'),
             ],
             [
                 'name' => 'Paquete Ejecutivo',
                 'description' => 'Ideal para una comida rápida y completa.',
                 'price' => '$149',
-                'image' => asset('images/menu/paquete-ejecutivo.jpg'),
+                'image' => $this->menuImage('paquete-ejecutivo.jpg'),
             ],
             [
                 'name' => 'Combo Infantil',
                 'description' => 'Porción ideal para los pequeños con bebida incluida.',
                 'price' => '$99',
-                'image' => asset('images/menu/combo-infantil.jpg'),
+                'image' => $this->menuImage('combo-infantil.jpg'),
             ],
             [
                 'name' => 'Papas Especiales',
                 'description' => 'Papas sazonadas crujientes y deliciosas.',
                 'price' => '$59',
-                'image' => asset('images/menu/papas-especiales.jpg'),
+                'image' => $this->menuImage('papas-especiales.jpg'),
             ],
             [
                 'name' => 'Complementos',
                 'description' => 'Papas, ensalada, arroz y frijoles.',
                 'price' => 'Desde $45',
-                'image' => asset('images/menu/complementos.jpg'),
+                'image' => $this->menuImage('complementos.jpg'),
             ],
             [
                 'name' => 'Bebidas',
                 'description' => 'Refrescos y aguas frescas para acompañar.',
                 'price' => 'Desde $25',
-                'image' => asset('images/menu/bebidas.jpg'),
+                'image' => $this->menuImage('bebidas.jpg'),
             ],
             [
                 'name' => 'Paquete Ejecutivo',
                 'description' => 'Ideal para una comida rápida y completa.',
                 'price' => '$149',
-                'image' => asset('images/menu/paquete-ejecutivo.jpg'),
+                'image' => $this->menuImage('paquete-ejecutivo.jpg'),
             ],
             [
                 'name' => 'Combo Infantil',
                 'description' => 'Porción ideal para los pequeños con bebida incluida.',
                 'price' => '$99',
-                'image' => asset('images/menu/combo-infantil.jpg'),
+                'image' => $this->menuImage('combo-infantil.jpg'),
             ],
             [
                 'name' => 'Papas Especiales',
                 'description' => 'Papas sazonadas crujientes y deliciosas.',
                 'price' => '$59',
-                'image' => asset('images/menu/papas-especiales.jpg'),
+                'image' => $this->menuImage('papas-especiales.jpg'),
             ],
             [
                 'name' => 'Complementos',
                 'description' => 'Papas, ensalada, arroz y frijoles.',
                 'price' => 'Desde $45',
-                'image' => asset('images/menu/complementos.jpg'),
+                'image' => $this->menuImage('complementos.jpg'),
             ],
             [
                 'name' => 'Bebidas',
                 'description' => 'Refrescos y aguas frescas para acompañar.',
                 'price' => 'Desde $25',
-                'image' => asset('images/menu/bebidas.jpg'),
+                'image' => $this->menuImage('bebidas.jpg'),
             ],
             [
                 'name' => 'Paquete Ejecutivo',
                 'description' => 'Ideal para una comida rápida y completa.',
                 'price' => '$149',
-                'image' => asset('images/menu/paquete-ejecutivo.jpg'),
+                'image' => $this->menuImage('paquete-ejecutivo.jpg'),
             ],
             [
                 'name' => 'Combo Infantil',
                 'description' => 'Porción ideal para los pequeños con bebida incluida.',
                 'price' => '$99',
-                'image' => asset('images/menu/combo-infantil.jpg'),
+                'image' => $this->menuImage('combo-infantil.jpg'),
             ],
             [
                 'name' => 'Papas Especiales',
                 'description' => 'Papas sazonadas crujientes y deliciosas.',
                 'price' => '$59',
-                'image' => asset('images/menu/papas-especiales.jpg'),
+                'image' => $this->menuImage('papas-especiales.jpg'),
             ],
         ];
+    }
+
+    private function menuImage(string $filename): string
+    {
+        $safeFilename = trim($filename);
+        $relativePath = 'images/menu/'.$safeFilename;
+
+        if (file_exists(public_path($relativePath))) {
+            return asset($relativePath);
+        }
+
+        return asset('images/menu/platillo1.jpeg');
     }
 }

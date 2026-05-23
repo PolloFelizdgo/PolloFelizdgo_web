@@ -4,7 +4,7 @@
             <img
                 src="{{ asset('images/logo.png') }}"
                 alt="Pollo Feliz"
-                class="w-12 h-12 sm:w-14 sm:h-14 object-contain"
+                class="brand-logo w-12 h-12 sm:w-14 sm:h-14 object-contain"
             >
             <span class="text-lg sm:text-2xl font-extrabold text-red-600 dark:text-yellow-400">
                 PolloFeliz
@@ -17,6 +17,7 @@
             <a href="#menu" class="hover:text-yellow-500 transition">Menú</a>
             <a href="#promociones" class="hover:text-yellow-500 transition">Promociones</a>
             <a href="#acerca" class="hover:text-yellow-500 transition">Acerca de</a>
+            <a href="{{ route('vacancies.index') }}" class="hover:text-yellow-500 transition">Bolsa de trabajo</a>
             <a href="#contacto" class="hover:text-yellow-500 transition">Contáctanos</a>
 
             <button
@@ -61,6 +62,7 @@
             <a href="#menu" class="mobile-menu-link hover:text-yellow-500 transition">Menú</a>
             <a href="#promociones" class="mobile-menu-link hover:text-yellow-500 transition">Promociones</a>
             <a href="#acerca" class="mobile-menu-link hover:text-yellow-500 transition">Acerca de</a>
+            <a href="{{ route('vacancies.index') }}" class="mobile-menu-link hover:text-yellow-500 transition">Bolsa de trabajo</a>
             <a href="#contacto" class="mobile-menu-link hover:text-yellow-500 transition">Contáctanos</a>
         </div>
     </div>

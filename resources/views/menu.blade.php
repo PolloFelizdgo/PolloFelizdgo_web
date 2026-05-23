@@ -26,7 +26,7 @@
                 <img
                     src="{{ asset('images/logo.png') }}"
                     alt="Pollo Feliz"
-                    class="w-12 h-12 sm:w-14 sm:h-14 object-contain"
+                    class="brand-logo w-12 h-12 sm:w-14 sm:h-14 object-contain"
                 >
                 <span class="text-lg sm:text-2xl font-extrabold text-red-600 dark:text-yellow-400">
                     PolloFeliz
@@ -127,9 +127,9 @@
 
         <div
             id="menuImageModal"
-            class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 px-4 py-8"
+            class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/80 px-4 py-8 opacity-0 transition-opacity duration-300"
         >
-            <div class="relative max-w-4xl w-full">
+            <div id="menuModalPanel" class="relative max-w-4xl w-full scale-95 opacity-0 transition duration-300 ease-out">
                 <button
                     type="button"
                     id="closeMenuImageModal"
@@ -161,36 +161,110 @@
             const menuCards = document.querySelectorAll('.menu-card');
             const noResults = document.getElementById('menuNoResults');
 
-            if (!searchInput || !menuCards.length || !noResults) {
-                return;
-            }
+            if (searchInput && menuCards.length && noResults) {
+                searchInput.addEventListener('input', () => {
+                    const query = searchInput.value.toLowerCase().trim();
+                    let visibleCount = 0;
 
-            searchInput.addEventListener('input', () => {
-                const query = searchInput.value.toLowerCase().trim();
-                let visibleCount = 0;
+                    menuCards.forEach((card) => {
+                        const name = card.dataset.menuName || '';
+                        const description = card.dataset.menuDescription || '';
+                        const price = card.dataset.menuPrice || '';
 
-                menuCards.forEach((card) => {
-                    const name = card.dataset.menuName || '';
-                    const description = card.dataset.menuDescription || '';
-                    const price = card.dataset.menuPrice || '';
+                        const matches =
+                            name.includes(query) ||
+                            description.includes(query) ||
+                            price.includes(query);
 
-                    const matches =
-                        name.includes(query) ||
-                        description.includes(query) ||
-                        price.includes(query);
+                        if (matches) {
+                            card.classList.remove('hidden');
+                            visibleCount++;
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
 
-                    if (matches) {
-                        card.classList.remove('hidden');
-                        visibleCount++;
+                    if (visibleCount === 0) {
+                        noResults.classList.remove('hidden');
                     } else {
-                        card.classList.add('hidden');
+                        noResults.classList.add('hidden');
                     }
                 });
+            }
 
-                if (visibleCount === 0) {
-                    noResults.classList.remove('hidden');
-                } else {
-                    noResults.classList.add('hidden');
+            const menuImageTriggers = document.querySelectorAll('.menu-image-trigger');
+            const menuImageModal = document.getElementById('menuImageModal');
+            const menuModalImage = document.getElementById('menuModalImage');
+            const menuModalTitle = document.getElementById('menuModalTitle');
+            const menuModalPanel = document.getElementById('menuModalPanel');
+            const closeMenuImageModal = document.getElementById('closeMenuImageModal');
+            let closeModalTimeoutId;
+
+            const closeModal = () => {
+                if (!menuImageModal) {
+                    return;
+                }
+
+                window.clearTimeout(closeModalTimeoutId);
+                menuImageModal.classList.add('opacity-0');
+
+                if (menuModalPanel) {
+                    menuModalPanel.classList.add('scale-95', 'opacity-0');
+                    menuModalPanel.classList.remove('scale-100', 'opacity-100');
+                }
+
+                closeModalTimeoutId = window.setTimeout(() => {
+                    menuImageModal.classList.add('hidden');
+                    menuImageModal.classList.remove('flex');
+                }, 300);
+
+                document.body.classList.remove('overflow-hidden');
+            };
+
+            const openModal = (imageSrc, title) => {
+                if (!menuImageModal || !menuModalImage || !menuModalTitle || !imageSrc) {
+                    return;
+                }
+
+                menuModalImage.src = imageSrc;
+                menuModalImage.alt = title || 'Imagen de menu';
+                menuModalTitle.textContent = title || 'Vista previa';
+                window.clearTimeout(closeModalTimeoutId);
+                menuImageModal.classList.remove('hidden');
+                menuImageModal.classList.add('flex');
+                document.body.classList.add('overflow-hidden');
+
+                window.setTimeout(() => {
+                    menuImageModal.classList.remove('opacity-0');
+
+                    if (menuModalPanel) {
+                        menuModalPanel.classList.remove('scale-95', 'opacity-0');
+                        menuModalPanel.classList.add('scale-100', 'opacity-100');
+                    }
+                }, 10);
+            };
+
+            menuImageTriggers.forEach((trigger) => {
+                trigger.addEventListener('click', () => {
+                    openModal(trigger.dataset.image || '', trigger.dataset.title || '');
+                });
+            });
+
+            if (closeMenuImageModal) {
+                closeMenuImageModal.addEventListener('click', closeModal);
+            }
+
+            if (menuImageModal) {
+                menuImageModal.addEventListener('click', (event) => {
+                    if (event.target === menuImageModal) {
+                        closeModal();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeModal();
                 }
             });
         });

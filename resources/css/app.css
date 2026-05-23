@@ -20,3 +20,12 @@ body {
 .card-soft {
     @apply bg-white dark:bg-gray-900 rounded-3xl shadow-md hover:shadow-2xl transition duration-300;
 }
+
+.brand-logo {
+    filter: drop-shadow(0 4px 10px rgba(185, 28, 28, 0.12));
+    transition: filter 300ms ease, transform 300ms ease;
+}
+
+.dark .brand-logo {
+    filter: brightness(0) saturate(100%) invert(83%) sepia(58%) saturate(1510%) hue-rotate(336deg) brightness(102%) contrast(102%) drop-shadow(0 8px 18px rgba(250, 204, 21, 0.28));
+}
