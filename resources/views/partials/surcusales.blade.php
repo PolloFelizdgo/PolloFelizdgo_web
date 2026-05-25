@@ -18,8 +18,10 @@
                     >
                         <img
                             src="{{ $branch['image'] }}"
-                            alt="{{ $branch['name'] }}"
+                            alt="Fachada de la {{ $branch['name'] }} de Pollo Feliz"
                             class="h-48 w-full object-cover cursor-pointer hover:scale-105 transition duration-300"
+                            loading="lazy"
+                            decoding="async"
                         >
                     </button>
 
@@ -28,17 +30,6 @@
                         <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">{{ $branch['address'] }}</p>
                         <p class="text-sm text-gray-700 dark:text-gray-200 mt-2"><strong>Tel:</strong> {{ $branch['phone'] }}</p>
                         <p class="text-sm text-gray-700 dark:text-gray-200"><strong>Horario:</strong> {{ $branch['hours'] }}</p>
-
-                        <div class="mt-4 rounded-xl overflow-hidden">
-                            <iframe
-                                src="{{ $branch['map'] }}"
-                                width="100%"
-                                height="180"
-                                style="border:0;"
-                                allowfullscreen=""
-                                loading="lazy">
-                            </iframe>
-                        </div>
 
                         <a
                             href="https://www.google.com/maps/search/?api=1&query={{ urlencode($branch['address']) }}"

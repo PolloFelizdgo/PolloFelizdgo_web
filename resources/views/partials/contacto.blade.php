@@ -22,7 +22,22 @@
             </div>
         @endif
 
-        <form action="{{ route('contact.store') }}" method="POST" class="bg-white dark:bg-gray-800 shadow-2xl rounded-3xl p-8 grid md:grid-cols-2 gap-6 transition-colors duration-300">
+        <div id="contactFormFeedback" class="hidden mb-6 rounded-2xl px-5 py-4 transition-colors duration-300" role="status" aria-live="polite"></div>
+
+        <div class="mb-6 rounded-2xl bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-800 px-5 py-4 text-sm text-gray-700 dark:text-gray-300">
+            <p class="font-semibold text-gray-900 dark:text-yellow-300">Canales alternos disponibles</p>
+            <p class="mt-1">Si el formulario presenta una falla temporal de correo o API, puedes contactarnos por estos medios:</p>
+            <div class="mt-3 flex flex-wrap gap-3">
+                <a href="https://wa.me/{{ config('external_links.contact.phone_digits') }}?text={{ rawurlencode((string) config('external_links.whatsapp.fallback_message')) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 transition">
+                    WhatsApp directo
+                </a>
+                <a href="tel:{{ config('external_links.contact.phone_e164') }}" class="inline-flex items-center rounded-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-100 font-semibold px-4 py-2 transition">
+                    Llamar: {{ config('external_links.contact.phone_display') }}
+                </a>
+            </div>
+        </div>
+
+        <form id="contactForm" action="{{ route('contact.store') }}" method="POST" data-recaptcha-site-key="{{ config('services.recaptcha.site_key') }}" class="bg-white dark:bg-gray-800 shadow-2xl rounded-3xl p-8 grid md:grid-cols-2 gap-6 transition-colors duration-300">
             @csrf
 
             <div>
@@ -79,13 +94,55 @@
                 >{{ old('message') }}</textarea>
             </div>
 
+            <div class="md:col-span-2">
+                <label for="privacy_consent" class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
+                    <input
+                        id="privacy_consent"
+                        name="privacy_consent"
+                        type="checkbox"
+                        value="1"
+                        required
+                        @checked(old('privacy_consent'))
+                        class="mt-0.5 w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-red-600 focus:ring-yellow-400"
+                    >
+                    <span>
+                        Confirmo que he leído y acepto el
+                        <a href="{{ route('privacy') }}" class="font-semibold text-red-600 dark:text-yellow-400 hover:underline">Aviso de privacidad</a>
+                        para el tratamiento de mis datos personales.
+                    </span>
+                </label>
+            </div>
+
+            <div class="md:col-span-2">
+                <input type="hidden" id="recaptchaToken" name="g-recaptcha-response" value="{{ old('g-recaptcha-response') }}">
+                @if(config('services.recaptcha.site_key'))
+                    <p class="text-xs text-gray-500 dark:text-gray-400 text-center">
+                        Este sitio esta protegido por reCAPTCHA y aplican la Politica de Privacidad y los Terminos de Servicio de Google.
+                    </p>
+                @else
+                    <p class="text-sm text-red-600 dark:text-red-400 text-center">
+                        Configura RECAPTCHA_SITE_KEY para activar el captcha del formulario.
+                    </p>
+                @endif
+            </div>
+
             <div class="md:col-span-2 text-center">
                 <button
                     type="submit"
-                    class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full shadow-lg transition">
-                    Enviar mensaje
+                    id="contactSubmitButton"
+                    class="inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed text-white px-8 py-3 rounded-full shadow-lg transition"
+                >
+                    <svg id="contactSubmitSpinner" class="hidden w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                    <span id="contactSubmitText">Enviar mensaje</span>
                 </button>
             </div>
         </form>
     </div>
 </section>
+
+@if(config('services.recaptcha.site_key'))
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}" async defer></script>
+@endif
