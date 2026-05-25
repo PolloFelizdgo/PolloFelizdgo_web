@@ -20,10 +20,10 @@
 
             <div class="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-4 justify-center lg:justify-start">
                 <a href="#contacto" class="bg-red-600 hover:bg-red-700 text-white px-6 sm:px-7 py-3.5 rounded-full shadow-lg transition duration-300 text-sm sm:text-base">
-                    Ordena Ahora
+                    Ordena ahora
                 </a>
                 <a href="#sucursales" class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-6 sm:px-7 py-3.5 rounded-full shadow-lg transition duration-300 text-sm sm:text-base">
-                    Ver Sucursales
+                    Ver sucursales
                 </a>
             </div>
 
@@ -61,7 +61,7 @@
                             >
                                 <img
                                     src="{{ $slide['image'] }}"
-                                    alt="{{ $slide['title'] }}"
+                                    alt="{{ $slide['title'] }} en Pollo Feliz"
                                     class="w-full h-[260px] sm:h-[340px] md:h-[420px] lg:h-[500px] object-cover cursor-pointer hover:scale-105 transition duration-500"
                                 >
                             </button>

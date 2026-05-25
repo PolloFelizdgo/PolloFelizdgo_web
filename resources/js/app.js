@@ -5,6 +5,21 @@ const themeIconMobile = document.getElementById('themeIconMobile');
 const menuThemeToggle = document.getElementById('menuThemeToggle');
 const menuThemeIcon = document.getElementById('menuThemeIcon');
 
+// Aplica preferencia de tema guardada para mantener consistencia entre recargas.
+const applySavedThemePreference = () => {
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+    }
+
+    if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+    }
+};
+
+applySavedThemePreference();
+
 // Sincroniza iconos de tema en desktop, mobile y pagina de menu.
 const updateThemeIcons = () => {
     const isDark = document.documentElement.classList.contains('dark');
@@ -225,7 +240,12 @@ const initTestimonialCarousel = () => {
             dot.type = 'button';
             dot.setAttribute('aria-label', `Ir al testimonio ${index + 1}`);
             dot.className = 'testimonial-dot h-2.5 rounded-full transition-all duration-300';
-            dot.classList.add(index === currentIndex ? 'w-8 bg-red-600 dark:bg-yellow-400' : 'w-2.5 bg-gray-300 dark:bg-gray-600');
+
+            if (index === currentIndex) {
+                dot.classList.add('w-8', 'bg-red-600', 'dark:bg-yellow-400');
+            } else {
+                dot.classList.add('w-2.5', 'bg-gray-300', 'dark:bg-gray-600');
+            }
 
             dot.addEventListener('click', () => {
                 showSlide(index);
@@ -432,6 +452,167 @@ const initHistoryPreview = () => {
 
 initHistoryPreview();
 
+const initContactForm = () => {
+    const form = document.getElementById('contactForm');
+    const submitButton = document.getElementById('contactSubmitButton');
+    const submitText = document.getElementById('contactSubmitText');
+    const spinner = document.getElementById('contactSubmitSpinner');
+    const feedback = document.getElementById('contactFormFeedback');
+    const recaptchaTokenInput = document.getElementById('recaptchaToken');
+
+    if (!form || !submitButton || !submitText || !spinner || !feedback) {
+        return;
+    }
+
+    const showFeedback = (type, message) => {
+        feedback.className = 'mb-6 rounded-2xl px-5 py-4 transition-colors duration-300';
+
+        if (type === 'success') {
+            feedback.classList.add('bg-green-100', 'dark:bg-green-950/40', 'border', 'border-green-300', 'dark:border-green-800', 'text-green-800', 'dark:text-green-300');
+        } else {
+            feedback.classList.add('bg-red-100', 'dark:bg-red-950/40', 'border', 'border-red-300', 'dark:border-red-800', 'text-red-700', 'dark:text-red-300');
+        }
+
+        feedback.textContent = message;
+        feedback.classList.remove('hidden');
+    };
+
+    const setLoadingState = (isLoading) => {
+        submitButton.disabled = isLoading;
+        spinner.classList.toggle('hidden', !isLoading);
+        submitText.textContent = isLoading ? 'Enviando...' : 'Enviar mensaje';
+    };
+
+    // Solicita token reCAPTCHA v3 justo antes de enviar el formulario.
+    const resolveRecaptchaToken = async () => {
+        const siteKey = form.dataset.recaptchaSiteKey || '';
+
+        if (!siteKey) {
+            return '';
+        }
+
+        if (!window.grecaptcha || typeof window.grecaptcha.execute !== 'function') {
+            throw new Error('reCAPTCHA no disponible');
+        }
+
+        return new Promise((resolve, reject) => {
+            window.grecaptcha.ready(() => {
+                window.grecaptcha.execute(siteKey, { action: 'contact_form' })
+                    .then(resolve)
+                    .catch(reject);
+            });
+        });
+    };
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        feedback.classList.add('hidden');
+        setLoadingState(true);
+
+        const formData = new FormData(form);
+        const csrfToken = form.querySelector('input[name="_token"]')?.value || '';
+
+        try {
+            const token = await resolveRecaptchaToken();
+
+            if (recaptchaTokenInput) {
+                recaptchaTokenInput.value = token;
+            }
+
+            formData.set('g-recaptcha-response', token);
+
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: formData,
+            });
+
+            const payload = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                if (payload?.errors && typeof payload.errors === 'object') {
+                    const firstError = Object.values(payload.errors)[0];
+                    const firstMessage = Array.isArray(firstError) ? firstError[0] : 'Verifica los campos e intenta nuevamente.';
+                    showFeedback('error', firstMessage);
+                } else {
+                    showFeedback('error', payload?.message || 'No se pudo enviar tu mensaje en este momento. Intenta nuevamente o contactanos por WhatsApp.');
+                }
+
+                return;
+            }
+
+            showFeedback('success', payload?.message || 'Tu mensaje fue enviado correctamente.');
+            form.reset();
+        } catch (_error) {
+            showFeedback('error', 'No se pudo enviar tu mensaje en este momento. Verifica tu conexion e intenta nuevamente o usa WhatsApp.');
+        } finally {
+            setLoadingState(false);
+        }
+    });
+};
+
+initContactForm();
+
+const initContextualWhatsApp = () => {
+    const button = document.getElementById('whatsappFloatButton');
+
+    if (!button) {
+        return;
+    }
+
+    const phone = button.dataset.phone || '526181293730';
+    const messages = {
+        default: button.dataset.messageDefault || 'Hola, quiero hacer un pedido en Pollo Feliz.',
+        menu: button.dataset.messageMenu || 'Hola, estoy viendo el menu y quiero pedir una recomendacion.',
+        promociones: button.dataset.messagePromociones || 'Hola, vi sus promociones y quiero mas informacion para ordenar.',
+        sucursales: button.dataset.messageSucursales || 'Hola, necesito apoyo para elegir mi sucursal mas cercana.',
+    };
+
+    const sectionMap = [
+        { id: 'menu', messageKey: 'menu' },
+        { id: 'promociones', messageKey: 'promociones' },
+        { id: 'sucursales', messageKey: 'sucursales' },
+    ];
+
+    const buildHref = (message) => `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+    const applyMessage = (messageKey) => {
+        const nextMessage = messages[messageKey] || messages.default;
+        button.href = buildHref(nextMessage);
+    };
+
+    const syncMessageByViewport = () => {
+        const middle = window.innerHeight / 2;
+        let activeMessageKey = 'default';
+
+        sectionMap.forEach((section) => {
+            const element = document.getElementById(section.id);
+
+            if (!element) {
+                return;
+            }
+
+            const rect = element.getBoundingClientRect();
+            if (rect.top <= middle && rect.bottom >= middle) {
+                activeMessageKey = section.messageKey;
+            }
+        });
+
+        applyMessage(activeMessageKey);
+    };
+
+    applyMessage('default');
+    window.addEventListener('scroll', syncMessageByViewport, { passive: true });
+    window.addEventListener('resize', syncMessageByViewport);
+    syncMessageByViewport();
+};
+
+initContextualWhatsApp();
+
 const initRevealOnScroll = () => {
     const items = Array.from(document.querySelectorAll('.reveal-on-scroll'));
 
@@ -448,6 +629,12 @@ const initRevealOnScroll = () => {
         return;
     }
 
+    // Mantiene contenido visible por defecto y solo aplica estado inicial si JS esta activo.
+    items.forEach((item) => {
+        item.classList.add('opacity-0', 'translate-y-6');
+        item.classList.remove('opacity-100', 'translate-y-0');
+    });
+
     const observer = new IntersectionObserver((entries, currentObserver) => {
         entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -456,9 +643,22 @@ const initRevealOnScroll = () => {
                 currentObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.2 });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -8% 0px',
+    });
 
     items.forEach((item) => observer.observe(item));
+
+    // Fallback: evita que cualquier elemento quede oculto si el observer no dispara.
+    window.setTimeout(() => {
+        items.forEach((item) => {
+            if (item.classList.contains('opacity-0')) {
+                item.classList.remove('opacity-0', 'translate-y-6');
+                item.classList.add('opacity-100', 'translate-y-0');
+            }
+        });
+    }, 1800);
 };
 
 initRevealOnScroll();

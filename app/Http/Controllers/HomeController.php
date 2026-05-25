@@ -3,21 +3,36 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vacancy;
+use App\Services\Panel\PanelContentService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
+    public function __construct(private readonly PanelContentService $panelContent)
+    {
+    }
+
     public function index(): View
     {
-        // Datos de sucursales para seccion de ubicaciones en home.
-        $branches = [
+        $this->panelContent->processDueScheduledPublishes();
+
+        $homeContent = $this->panelContent->getPublishedPayload('home.content', config('site_content.home', []));
+        $aboutContent = $this->panelContent->getPublishedPayload('about.content', config('site_content.about', []));
+
+        $staticData = Cache::remember('home.static_data.v1', now()->addMinutes(60), function (): array {
+            $homeContent = $this->panelContent->getPublishedPayload('home.content', config('site_content.home', []));
+
+            // Datos de sucursales para seccion de ubicaciones en home.
+            // Si necesitas actualizar mapas, edita la direccion y la URL embed en cada elemento.
+            $branches = [
             [
                 'name' => 'Suc.Jardines',
                 'address' => 'Blvd. Francisco Villa 103, Jardines de Durango, 34200 Durango, Dgo.',
                 'phone' => '(618) 129 3730',
                 'hours' => '9:00 AM - 6:00 PM',
                 'image' => asset('images/jardines.jpeg'),
-                'map' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3738.7851234567890!2d-104.65234567890!3d24.026789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x869bb7b87724a77f%3A0x5b4f0c0e90e9cf25!2sPollo%20Feliz%20Jardines!5e0!3m2!1ses!2smx!4v1234567890',
+                'map' => 'https://www.google.com/maps?q=Blvd.%20Francisco%20Villa%20103%2C%20Jardines%20de%20Durango%2C%2034200%20Durango%2C%20Dgo.&output=embed',
             ],
             [
                 'name' => 'Suc.Fidel Velázquez',
@@ -25,7 +40,7 @@ class HomeController extends Controller
                 'phone' => '(618) 814 1166',
                 'hours' => '10:00 AM - 6:00 PM',
                 'image' => asset('images/fidel.jpeg'),
-                'map' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3643.108702096669!2d-104.6035692!3d24.0624763!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x869bb6fbaa9e74af%3A0x1d25abde1bd0cef6!2sPollo%20Feliz!5e0!3m2!1sen!2smx!4v1779463362021!5m2!1sen!2smx',
+                'map' => 'https://www.google.com/maps?q=Av%20Fidel%20Vel%C3%A1zquez%20S%C3%A1nchez%20114%2C%20Fidel%20Vel%C3%A1zquez%2C%2034229%20Durango%2C%20Dgo.&output=embed',
             ],
             [
                 'name' => 'Suc. Pino Suarez',
@@ -33,7 +48,7 @@ class HomeController extends Controller
                 'phone' => '(618) 810 8948',
                 'hours' => '9:00 AM - 6:00 PM',
                 'image' => asset('images/pino.jpg'),
-                'map' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3644.078188352233!2d-104.6237019!3d24.028307800000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x869bb79800293c6b%3A0xaa07afcdb79e3758!2sPollo%20Feliz!5e0!3m2!1sen!2smx!4v1779464019606!5m2!1sen!2smx',
+                'map' => 'https://www.google.com/maps?q=Prol.%20Pino%20Su%C3%A1rez%203922%2C%20Industrial%20Ladrillera%2C%2034280%20Durango%2C%20Dgo.&output=embed',
             ],
             [
                 'name' => 'Suc. Lomas',
@@ -41,7 +56,7 @@ class HomeController extends Controller
                 'phone' => '(618) 130 3197',
                 'hours' => '9:00 AM - 6:30 PM',
                 'image' => asset('images/lomas.jpg'),
-                'map' => 'https://www.google.com/maps/embed?pb=!3m2!1sen!2smx!4v1779466189040!5m2!1sen!2smx!6m8!1m7!1speL5yLTxD23Rm3PaYSjhNw!2m2!1d24.01472528595662!2d-104.6904498944229!3f198.11976574334292!4f-0.12387153436095844!5f0.7820865974627469',
+                'map' => 'https://www.google.com/maps?q=Loma%20Dorada%2C%2034100%20Durango%2C%20Dgo.&output=embed',
             ],
             [
                 'name' => 'Suc.Domingo Arrieta',
@@ -49,7 +64,7 @@ class HomeController extends Controller
                 'phone' => '(618) 111 2237',
                 'hours' => '9:00 AM - 9:00 PM',
                 'image' => asset('images/adomingo.jpg'),
-                'map' => 'https://www.google.com/maps/embed?pb=!3m2!1sen!2smx!4v1779466627263!5m2!1sen!2smx!6m8!1m7!1smqbgrWzA-TnemUxxat2ebg!2m2!1d24.01141894183079!2d-104.6628684411756!3f271.03501446378095!4f-3.971255865307228!5f0.7820865974627469',
+                'map' => 'https://www.google.com/maps?q=Blvd.%20Domingo%20Arrieta%20506%2C%20Villa%20Alegre%2C%2034139%20Durango%2C%20Dgo.&output=embed',
             ],
             [
                 'name' => 'Suc. Primo de Verdad',
@@ -57,7 +72,7 @@ class HomeController extends Controller
                 'phone' => '(618) 111 2238',
                 'hours' => '9:30 AM - 6:30 PM',
                 'image' => asset('images/primo.jpg'),
-                'map' => 'https://www.google.com/maps/embed?pb=!3m2!1sen!2smx!4v1779467009783!5m2!1sen!2smx!6m8!1m7!1szOhoqhseNtP22xdto_4k1w!2m2!1d24.00906026195925!2d-104.6793672480862!3f202.369393333996!4f-0.9696255643325316!5f0.4000000000000002',
+                'map' => 'https://www.google.com/maps?q=Primo%20de%20Verdad%201000%2C%20Valle%20del%20Sur%2C%2034120%20Durango%2C%20Dgo.&output=embed',
             ],
             [
                 'name' => 'Suc.Sep',
@@ -65,7 +80,7 @@ class HomeController extends Controller
                 'phone' => '(618) 111 2239',
                 'hours' => '8:30 AM - 6:30 PM',
                 'image' => asset('images/sep.jpg'),
-                'map' => 'https://www.google.com/maps/embed?pb=!3m2!1sen!2smx!4v1779467615446!5m2!1sen!2smx!6m8!1m7!1shP5A2au84F716QXQxsvciA!2m2!1d23.99586969232776!2d-104.6651152540984!3f207.52790312749258!4f2.4213789199875038!5f0.7820865974627469',
+                'map' => 'https://www.google.com/maps?q=Av.%20Divisi%C3%B3n%20Durango%20302%2C%20Gral%20Domingo%20Arrieta%2C%2034180%20Durango%2C%20Dgo.&output=embed',
             ],
             [
                 'name' => 'Suc.Santiago Papasquiaro',
@@ -73,61 +88,49 @@ class HomeController extends Controller
                 'phone' => '6748626339',
                 'hours' => '10:00 AM - 6:00 PM',
                 'image' => asset('images/santiago.jpg'),
-                'map' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.647166732933!2d-105.41329050393314!3d25.046045336318727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8697680f500ac5c5%3A0x38aff5033e5d8a70!2sEl%20Pollo%20Feliz!5e0!3m2!1sen!2smx!4v1779467850663!5m2!1sen!2smx',
+                'map' => 'https://www.google.com/maps?q=Ramiro%20Rodr%C3%ADguez%20Palafox%201604%2C%20Silvestres%20Revueltas%2C%2034630%20Santiago%20Papasquiaro%2C%20Dgo.&output=embed',
             ],
+            ];
+
+            // Promociones, hero y testimonios centralizados en config/site_content.php.
+            $promotions = $homeContent['promotions'] ?? [];
+
+            $heroSlides = array_map(function (array $slide): array {
+                return [
+                    'image' => $this->resolveImagePath((string) ($slide['image'] ?? ''), 'images/portada.jpg'),
+                    'title' => (string) ($slide['title'] ?? ''),
+                    'text' => (string) ($slide['text'] ?? ''),
+                ];
+            }, $homeContent['hero_slides'] ?? []);
+
+            $testimonials = $homeContent['testimonials'] ?? [];
+
+            return [
+                'branches' => $branches,
+                'promotions' => $promotions,
+                'heroSlides' => $heroSlides,
+                'testimonials' => $testimonials,
+            ];
+        });
+
+        $branches = $staticData['branches'];
+        $promotions = $staticData['promotions'];
+        $heroSlides = $staticData['heroSlides'];
+        $testimonials = $staticData['testimonials'];
+
+        $aboutSummaryConfig = $aboutContent['summary'] ?? config('site_content.about.summary', []);
+        $aboutSummary = [
+            'label' => (string) ($aboutSummaryConfig['label'] ?? 'Acerca de nosotros'),
+            'title' => (string) ($aboutSummaryConfig['title'] ?? 'Tradicion que se disfruta en familia'),
+            'paragraphs' => (array) ($aboutSummaryConfig['paragraphs'] ?? []),
+            'button' => (string) ($aboutSummaryConfig['button'] ?? 'Conocer mas'),
+            'image' => $this->resolveImagePath((string) ($aboutSummaryConfig['image'] ?? ''), 'images/portada.jpg'),
+            'fallback_image' => (string) ($aboutSummaryConfig['fallback_image'] ?? ''),
         ];
 
         // Catalogo completo y version resumida para cards destacadas en home.
         $menuItems = $this->getMenuItems();
         $featuredMenuItems = array_slice($menuItems, 0, 6);
-
-        // Promociones destacadas de la landing.
-        $promotions = [
-            [
-                'title' => 'Lunes de oficina',
-                'description' => 'Combo individual con bebida a precio especial para iniciar la semana.',
-                'price' => '$129',
-            ],
-            [
-                'title' => 'Promoción Miércoles',
-                'description' => '2x1 en complementos seleccionados: papas, ensalada o arroz.',
-                'price' => '2x1',
-            ],
-            [
-                'title' => 'Jueves estudiantil',
-                'description' => 'Descuento especial en combo individual mostrando credencial vigente.',
-                'price' => '10% OFF',
-            ],
-            [
-                'title' => 'Viernes de combo familiar',
-                'description' => 'Pollo, complementos y refresco grande en paquete con precio cerrado.',
-                'price' => '$299',
-            ],
-            [
-                'title' => 'Sábado de sucursal',
-                'description' => 'Promoción especial exclusiva por ubicación, válida solo en sucursal participante.',
-                'price' => 'Desde $99',
-            ],
-        ];
-
-        // Slides para hero principal (imagen, titulo y descripcion).
-        $heroSlides = [
-            [
-                'image' => asset('images/portada.jpg'),
-                'title' => 'El sabor que une a la familia',
-                'text' => 'Disfruta del auténtico sabor de Pollo Feliz con la mejor calidad, recetas tradicionales y una experiencia deliciosa para toda la familia.',
-            ],
-            [
-                'image' => asset('images/fidel.jpeg'),
-                'title' => 'Tradición en cada bocado',
-                'text' => 'Recetas únicas, pollo asado de calidad y el mejor servicio para compartir grandes momentos.',
-            ],
-            [
-                'image' => asset('images/fidel.jpeg'),
-                'title' => 'Promociones y sabor todos los días',
-                'text' => 'Encuentra tus sucursales favoritas y disfruta promociones especiales para toda la familia.',
-            ],
-        ];
 
         $latestVacancies = Vacancy::query()
             ->where('is_active', true)
@@ -136,11 +139,13 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
-        return view('home', compact('branches', 'featuredMenuItems', 'promotions', 'heroSlides', 'latestVacancies'));
+        return view('home', compact('branches', 'featuredMenuItems', 'promotions', 'heroSlides', 'testimonials', 'aboutSummary', 'latestVacancies'));
     }
 
     public function menu(): View
     {
+        $this->panelContent->processDueScheduledPublishes();
+
         // Vista de menu completo con todo el catalogo.
         $menuItems = $this->getMenuItems();
 
@@ -149,93 +154,141 @@ class HomeController extends Controller
 
     public function about(): View
     {
-        // Edita esta seccion si quieres cambiar el contenido de la pagina /acerca.
-        // Cada imagen apunta a un archivo dentro de public/images.
-        $aboutImages = [
-            'hero' => asset('images/portada.jpg'),
-            'history' => asset('images/jardines.jpeg'),
-            'mission' => asset('images/fidel.jpeg'),
-            'vision' => asset('images/santiago.jpg'),
-        ];
+        $this->panelContent->processDueScheduledPublishes();
 
-        // Linea de tiempo corporativa.
-        // Edita year, title, description e image para actualizar los hitos.
-        $timeline = [
-            [
-                'year' => '2004',
-                'title' => 'Inicio de operaciones',
-                'description' => 'Nace Pollo Feliz en Durango con una propuesta centrada en sabor tradicional y atencion cercana.',
-                'image' => asset('images/jardines.jpeg'),
-            ],
-            [
-                'year' => '2010',
-                'title' => 'Expansion regional',
-                'description' => 'Se consolida la apertura de nuevas sucursales para atender mas zonas de la ciudad.',
-                'image' => asset('images/fidel.jpeg'),
-            ],
-            [
-                'year' => '2018',
-                'title' => 'Estandarizacion operativa',
-                'description' => 'Se fortalecen procesos de calidad, servicio y capacitacion para todo el equipo.',
-                'image' => asset('images/sep.jpg'),
-            ],
-            [
-                'year' => '2026',
-                'title' => 'Innovacion continua',
-                'description' => 'Se integran mejoras en experiencia digital, comunicacion de marca y servicio al cliente.',
-                'image' => asset('images/portada.jpg'),
-            ],
-        ];
+        $aboutContent = $this->panelContent->getPublishedPayload('about.content', config('site_content.about', []));
 
-        // Tarjetas de valores institucionales.
-        // Cambia title y description para reflejar otro mensaje de marca.
-        $values = [
-            [
-                'icon' => '🤝',
-                'title' => 'Servicio cercano',
-                'description' => 'Atendemos a cada cliente con respeto, rapidez y calidez.',
-            ],
-            [
-                'icon' => '⭐',
-                'title' => 'Calidad constante',
-                'description' => 'Cuidamos ingredientes, preparacion y presentacion en cada pedido.',
-            ],
-            [
-                'icon' => '🔥',
-                'title' => 'Pasion por el sabor',
-                'description' => 'Mantenemos el sazón tradicional que distingue a la marca.',
-            ],
-            [
-                'icon' => '📈',
-                'title' => 'Mejora continua',
-                'description' => 'Evolucionamos procesos y experiencia para superar expectativas.',
-            ],
-        ];
+        [$aboutImages, $timeline, $values] = Cache::remember('about.static_data.v1', now()->addMinutes(60), function (): array {
+            $aboutContent = $this->panelContent->getPublishedPayload('about.content', config('site_content.about', []));
+
+            // Edita esta seccion si quieres cambiar el contenido de la pagina /acerca.
+            // Cada imagen apunta a un archivo dentro de public/images.
+            $aboutImages = array_map(fn (string $path): string => $this->resolveImagePath($path, 'images/portada.jpg'), $aboutContent['images'] ?? []);
+
+            // Linea de tiempo corporativa.
+            // Edita year, title, description e image para actualizar los hitos.
+            $timeline = array_map(function (array $item): array {
+                $item['image'] = $this->resolveImagePath((string) ($item['image'] ?? ''), 'images/portada.jpg');
+
+                return $item;
+            }, $aboutContent['timeline'] ?? []);
+
+            // Tarjetas de valores institucionales.
+            // Cambia title y description para reflejar otro mensaje de marca.
+            $values = $aboutContent['values'] ?? [];
+
+            return [$aboutImages, $timeline, $values];
+        });
 
         return view('about', compact('aboutImages', 'timeline', 'values'));
     }
 
     private function getMenuItems(): array
     {
+        return Cache::remember('menu.items.v1', now()->addMinutes(60), function (): array {
+            $defaultItems = $this->defaultMenuItems();
+            $menuContent = $this->panelContent->getPublishedPayload('menu.items', ['items' => []]);
+            $overrides = is_array($menuContent['items'] ?? null) ? $menuContent['items'] : [];
+
+            return $this->applyMenuEditorOverrides($defaultItems, $overrides);
+        });
+    }
+
+    private function defaultMenuItems(): array
+    {
         // Fuente central de productos para home y pagina de menu.
+        // category se usa en filtros de /menu. Valores: pollos, combos, paquetes, complementos, bebidas.
         return [
             [
                 'name' => 'Pollo Asado Entero',
                 'description' => 'Pollo entero sazonado con receta tradicional.',
                 'price' => '$199',
                 'image' => $this->menuImage('platillo1.jpeg'),
+                'category' => 'pollos',
             ],
             [
                 'name' => 'Medio Pollo',
                 'description' => 'Ideal para compartir con tortillas y salsa.',
                 'price' => '$109',
                 'image' => $this->menuImage('platillo2.jpeg'),
+                'category' => 'pollos',
             ],
             [
                 'name' => 'Combo Familiar',
                 'description' => 'Pollo, tortillas, salsa, papas y refresco.',
                 'price' => '$289',
                 'image' => $this->menuImage('combo-familiar.jpg'),
+                'category' => 'combos',
+            ],
+            [
+                'name' => 'Complementos',
+                'description' => 'Papas, ensalada, arroz y frijoles.',
+                'price' => 'Desde $45',
+                'image' => $this->menuImage('complementos.jpg'),
+                'category' => 'complementos',
+            ],
+            [
+                'name' => 'Bebidas',
+                'description' => 'Refrescos y aguas frescas para acompañar.',
+                'price' => 'Desde $25',
+                'image' => $this->menuImage('bebidas.jpg'),
+                'category' => 'bebidas',
+            ],
+            [
+                'name' => 'Paquete Ejecutivo',
+                'description' => 'Ideal para una comida rápida y completa.',
+                'price' => '$149',
+                'image' => $this->menuImage('paquete-ejecutivo.jpg'),
+                'category' => 'paquetes',
+            ],
+            [
+                'name' => 'Combo Infantil',
+                'description' => 'Porción ideal para los pequeños con bebida incluida.',
+                'price' => '$99',
+                'image' => $this->menuImage('combo-infantil.jpg'),
+                'category' => 'combos',
+            ],
+            [
+                'name' => 'Papas Especiales',
+                'description' => 'Papas sazonadas crujientes y deliciosas.',
+                'price' => '$59',
+                'image' => $this->menuImage('papas-especiales.jpg'),
+                'category' => 'complementos',
+            ],
+            [
+                'name' => 'Complementos',
+                'description' => 'Papas, ensalada, arroz y frijoles.',
+                'price' => 'Desde $45',
+                'image' => $this->menuImage('complementos.jpg'),
+                'category' => 'complementos',
+            ],
+            [
+                'name' => 'Bebidas',
+                'description' => 'Refrescos y aguas frescas para acompañar.',
+                'price' => 'Desde $25',
+                'image' => $this->menuImage('bebidas.jpg'),
+                'category' => 'bebidas',
+            ],
+            [
+                'name' => 'Paquete Ejecutivo',
+                'description' => 'Ideal para una comida rápida y completa.',
+                'price' => '$149',
+                'image' => $this->menuImage('paquete-ejecutivo.jpg'),
+                'category' => 'paquetes',
+            ],
+            [
+                'name' => 'Combo Infantil',
+                'description' => 'Porción ideal para los pequeños con bebida incluida.',
+                'price' => '$99',
+                'image' => $this->menuImage('combo-infantil.jpg'),
+                'category' => 'combos',
+            ],
+            [
+                'name' => 'Papas Especiales',
+                'description' => 'Papas sazonadas crujientes y deliciosas.',
+                'price' => '$59',
+                'image' => $this->menuImage('papas-especiales.jpg'),
+                'category' => 'complementos',
             ],
             [
                 'name' => 'Complementos',
@@ -267,67 +320,31 @@ class HomeController extends Controller
                 'price' => '$59',
                 'image' => $this->menuImage('papas-especiales.jpg'),
             ],
-            [
-                'name' => 'Complementos',
-                'description' => 'Papas, ensalada, arroz y frijoles.',
-                'price' => 'Desde $45',
-                'image' => $this->menuImage('complementos.jpg'),
-            ],
-            [
-                'name' => 'Bebidas',
-                'description' => 'Refrescos y aguas frescas para acompañar.',
-                'price' => 'Desde $25',
-                'image' => $this->menuImage('bebidas.jpg'),
-            ],
-            [
-                'name' => 'Paquete Ejecutivo',
-                'description' => 'Ideal para una comida rápida y completa.',
-                'price' => '$149',
-                'image' => $this->menuImage('paquete-ejecutivo.jpg'),
-            ],
-            [
-                'name' => 'Combo Infantil',
-                'description' => 'Porción ideal para los pequeños con bebida incluida.',
-                'price' => '$99',
-                'image' => $this->menuImage('combo-infantil.jpg'),
-            ],
-            [
-                'name' => 'Papas Especiales',
-                'description' => 'Papas sazonadas crujientes y deliciosas.',
-                'price' => '$59',
-                'image' => $this->menuImage('papas-especiales.jpg'),
-            ],
-            [
-                'name' => 'Complementos',
-                'description' => 'Papas, ensalada, arroz y frijoles.',
-                'price' => 'Desde $45',
-                'image' => $this->menuImage('complementos.jpg'),
-            ],
-            [
-                'name' => 'Bebidas',
-                'description' => 'Refrescos y aguas frescas para acompañar.',
-                'price' => 'Desde $25',
-                'image' => $this->menuImage('bebidas.jpg'),
-            ],
-            [
-                'name' => 'Paquete Ejecutivo',
-                'description' => 'Ideal para una comida rápida y completa.',
-                'price' => '$149',
-                'image' => $this->menuImage('paquete-ejecutivo.jpg'),
-            ],
-            [
-                'name' => 'Combo Infantil',
-                'description' => 'Porción ideal para los pequeños con bebida incluida.',
-                'price' => '$99',
-                'image' => $this->menuImage('combo-infantil.jpg'),
-            ],
-            [
-                'name' => 'Papas Especiales',
-                'description' => 'Papas sazonadas crujientes y deliciosas.',
-                'price' => '$59',
-                'image' => $this->menuImage('papas-especiales.jpg'),
-            ],
-        ];
+            ];
+    }
+
+    private function applyMenuEditorOverrides(array $defaultItems, array $overrides): array
+    {
+        foreach ($defaultItems as $index => $item) {
+            $override = $overrides[$index] ?? null;
+
+            if (! is_array($override)) {
+                continue;
+            }
+
+            $name = trim((string) ($override['name'] ?? ''));
+            $price = trim((string) ($override['price'] ?? ''));
+
+            if ($name !== '') {
+                $defaultItems[$index]['name'] = $name;
+            }
+
+            if ($price !== '') {
+                $defaultItems[$index]['price'] = $price;
+            }
+        }
+
+        return $defaultItems;
     }
 
     private function menuImage(string $filename): string
@@ -340,5 +357,22 @@ class HomeController extends Controller
         }
 
         return asset('images/menu/platillo1.jpeg');
+    }
+
+    private function resolveImagePath(string $path, string $fallback): string
+    {
+        $trimmedPath = trim($path);
+
+        if ($trimmedPath !== '' && preg_match('/^https?:\/\//i', $trimmedPath)) {
+            return $trimmedPath;
+        }
+
+        $normalizedPath = ltrim($trimmedPath, '/');
+
+        if ($normalizedPath !== '' && file_exists(public_path($normalizedPath))) {
+            return asset($normalizedPath);
+        }
+
+        return asset($fallback);
     }
 }

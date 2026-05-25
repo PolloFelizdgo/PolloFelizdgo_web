@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bolsa de Trabajo | Pollo Feliz</title>
+    <title>Bolsa de Trabajo | Pollo Feliz Durango</title>
+    <meta name="description" content="Consulta vacantes activas en Pollo Feliz Durango y postúlate para formar parte de nuestro equipo.">
+    <meta property="og:title" content="Bolsa de Trabajo | Pollo Feliz Durango">
+    <meta property="og:description" content="Oportunidades laborales en operaciones, cocina, caja y áreas administrativas.">
+    <meta property="og:image" content="{{ url('/images/portada.jpg') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script>
@@ -25,7 +34,7 @@
             <a href="{{ route('home') }}" class="flex items-center gap-3">
                 <img
                     src="{{ asset('images/logo.png') }}"
-                    alt="Pollo Feliz"
+                    alt="Logotipo oficial de Pollo Feliz"
                     class="brand-logo w-12 h-12 sm:w-14 sm:h-14 object-contain"
                 >
                 <span class="text-lg sm:text-2xl font-extrabold text-red-600 dark:text-yellow-400">
@@ -80,8 +89,10 @@
                             @if($vacancy->image_path)
                                 <img
                                     src="{{ asset($vacancy->image_path) }}"
-                                    alt="{{ $vacancy->title }}"
+                                    alt="Vacante de {{ $vacancy->title }} en Pollo Feliz"
                                     class="w-full h-52 object-cover"
+                                    loading="lazy"
+                                    decoding="async"
                                 >
                             @endif
 

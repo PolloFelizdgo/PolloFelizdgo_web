@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acerca de Nosotros | Pollo Feliz</title>
+    <title>Acerca de Nosotros | Pollo Feliz Durango</title>
+    <meta name="description" content="Conoce la historia, visión y valores de Pollo Feliz Durango y nuestro compromiso con la calidad y el servicio.">
+    <meta property="og:title" content="Acerca de Nosotros | Pollo Feliz Durango">
+    <meta property="og:description" content="Historia corporativa y compromiso de Pollo Feliz Durango con sus clientes.">
+    <meta property="og:image" content="{{ url('/images/portada.jpg') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script>
@@ -58,7 +67,7 @@
             <div class="grid lg:grid-cols-2 gap-8 items-center">
                 <div>
                     <p class="text-red-500 dark:text-yellow-400 font-semibold uppercase tracking-[0.25em] text-sm">Acerca de nosotros</p>
-                    <h1 class="mt-3 text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight">Nuestra historia, mision y vision</h1>
+                    <h1 class="mt-3 text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight">Nuestra historia, misión y visión</h1>
                     <p class="mt-5 text-lg text-gray-600 dark:text-gray-300 max-w-2xl">
                         Conoce el camino que nos ha convertido en una marca cercana a las familias mexicanas y el compromiso que guia cada decision en Pollo Feliz.
                     </p>
@@ -70,7 +79,7 @@
                         </div>
                         <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-md text-center">
                             <p class="text-2xl font-extrabold text-red-600 dark:text-yellow-400">20+</p>
-                            <p class="text-xs text-gray-600 dark:text-gray-300">Anos de experiencia</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-300">Años de experiencia</p>
                         </div>
                         <div class="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-md text-center">
                             <p class="text-2xl font-extrabold text-red-600 dark:text-yellow-400">100%</p>
@@ -83,7 +92,7 @@
                     {{-- Cambia la imagen principal corporativa desde HomeController->about() en la llave hero --}}
                     <img
                         src="{{ $aboutImages['hero'] }}"
-                        alt="Portada corporativa Pollo Feliz"
+                        alt="Equipo de Pollo Feliz en operación diaria dentro de sucursal"
                         class="w-full h-[320px] md:h-[420px] object-cover rounded-3xl shadow-2xl"
                     >
                     <div class="absolute inset-x-4 bottom-4 bg-black/65 backdrop-blur-sm rounded-2xl p-4">
@@ -97,7 +106,7 @@
             <div class="mt-12 grid md:grid-cols-3 gap-6">
                 <article class="card-soft border border-yellow-100 dark:border-gray-800 overflow-hidden">
                     {{-- Cambia la imagen de historia desde HomeController->about() en la llave history --}}
-                    <img src="{{ $aboutImages['history'] }}" alt="Historia Pollo Feliz" class="w-full h-44 object-cover">
+                    <img src="{{ $aboutImages['history'] }}" alt="Imagen representativa de la historia y crecimiento de Pollo Feliz en Durango" class="w-full h-44 object-cover" loading="lazy" decoding="async">
                     <div class="p-6">
                         <h2 class="text-2xl font-extrabold text-red-600 dark:text-yellow-400">Historia</h2>
                         <p class="mt-4 text-gray-600 dark:text-gray-300 leading-relaxed">
@@ -108,9 +117,9 @@
 
                 <article class="card-soft border border-yellow-100 dark:border-gray-800 overflow-hidden">
                     {{-- Cambia la imagen de mision desde HomeController->about() en la llave mission --}}
-                    <img src="{{ $aboutImages['mission'] }}" alt="Mision Pollo Feliz" class="w-full h-44 object-cover">
+                    <img src="{{ $aboutImages['mission'] }}" alt="Colaboradores de Pollo Feliz preparando alimentos bajo estándares de calidad" class="w-full h-44 object-cover" loading="lazy" decoding="async">
                     <div class="p-6">
-                        <h2 class="text-2xl font-extrabold text-red-600 dark:text-yellow-400">Mision</h2>
+                        <h2 class="text-2xl font-extrabold text-red-600 dark:text-yellow-400">Misión</h2>
                         <p class="mt-4 text-gray-600 dark:text-gray-300 leading-relaxed">
                             Brindar alimentos de calidad, con sabor autentico y servicio excepcional, para crear momentos memorables alrededor de la mesa.
                         </p>
@@ -119,9 +128,9 @@
 
                 <article class="card-soft border border-yellow-100 dark:border-gray-800 overflow-hidden">
                     {{-- Cambia la imagen de vision desde HomeController->about() en la llave vision --}}
-                    <img src="{{ $aboutImages['vision'] }}" alt="Vision Pollo Feliz" class="w-full h-44 object-cover">
+                    <img src="{{ $aboutImages['vision'] }}" alt="Sucursal de Pollo Feliz reflejando visión de crecimiento e innovación" class="w-full h-44 object-cover" loading="lazy" decoding="async">
                     <div class="p-6">
-                        <h2 class="text-2xl font-extrabold text-red-600 dark:text-yellow-400">Vision</h2>
+                        <h2 class="text-2xl font-extrabold text-red-600 dark:text-yellow-400">Visión</h2>
                         <p class="mt-4 text-gray-600 dark:text-gray-300 leading-relaxed">
                             Ser la opcion favorita de pollo asado en la region, reconocida por su sabor, cercania con la comunidad e innovacion constante.
                         </p>
@@ -141,7 +150,7 @@
                     <div class="space-y-8">
                         @foreach($timeline as $milestone)
                             <article
-                                class="reveal-on-scroll opacity-100 translate-y-0 transition-all duration-700 grid md:grid-cols-2 gap-6 md:gap-10 items-center"
+                                class="reveal-on-scroll transition-all duration-700 grid md:grid-cols-2 gap-6 md:gap-10 items-center"
                                 data-preview-title="{{ $milestone['title'] }}"
                                 data-preview-year="{{ $milestone['year'] }}"
                                 data-preview-image="{{ $milestone['image'] }}"
@@ -149,7 +158,7 @@
                             >
                                 @if($loop->odd)
                                     <button type="button" class="history-preview-trigger block w-full text-left bg-white dark:bg-gray-900 rounded-3xl border border-yellow-100 dark:border-gray-800 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition duration-300">
-                                        <img src="{{ $milestone['image'] }}" alt="{{ $milestone['title'] }}" class="w-full h-48 object-cover">
+                                        <img src="{{ $milestone['image'] }}" alt="{{ $milestone['title'] }}" class="w-full h-48 object-cover" loading="lazy" decoding="async">
                                         <div class="p-6">
                                             <div class="flex items-center gap-3">
                                                 <span class="inline-flex items-center justify-center min-w-16 h-9 px-3 rounded-full bg-red-600 text-white font-bold text-sm">{{ $milestone['year'] }}</span>
@@ -168,7 +177,7 @@
                                     </div>
 
                                     <button type="button" class="history-preview-trigger block w-full text-left bg-white dark:bg-gray-900 rounded-3xl border border-yellow-100 dark:border-gray-800 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition duration-300">
-                                        <img src="{{ $milestone['image'] }}" alt="{{ $milestone['title'] }}" class="w-full h-48 object-cover">
+                                        <img src="{{ $milestone['image'] }}" alt="{{ $milestone['title'] }}" class="w-full h-48 object-cover" loading="lazy" decoding="async">
                                         <div class="p-6">
                                             <div class="flex items-center gap-3">
                                                 <span class="inline-flex items-center justify-center min-w-16 h-9 px-3 rounded-full bg-red-600 text-white font-bold text-sm">{{ $milestone['year'] }}</span>

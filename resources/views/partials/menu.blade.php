@@ -2,12 +2,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-14">
             <h2 class="section-title">Menú</h2>
-            <p class="section-subtitle">Descubre nuestros productos y combos favoritos.</p>
+            <p class="section-subtitle">Descubre nuestra selección de platillos, combos y complementos.</p>
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($featuredMenuItems as $item)
-                <div class="card-soft border border-yellow-100 dark:border-gray-700 overflow-hidden">
+                <div class="reveal-on-scroll transition-all duration-700 card-soft border border-yellow-100 dark:border-gray-700 overflow-hidden">
                     <button
                         type="button"
                         class="menu-image-trigger block w-full text-left"
@@ -16,8 +16,10 @@
                     >
                         <img
                             src="{{ $item['image'] }}"
-                            alt="{{ $item['name'] }}"
+                            alt="{{ $item['name'] }} de Pollo Feliz"
                             class="w-full h-56 object-cover cursor-pointer hover:scale-105 transition duration-500"
+                            loading="lazy"
+                            decoding="async"
                         >
                     </button>
 

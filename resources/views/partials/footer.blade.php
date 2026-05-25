@@ -1,10 +1,19 @@
 <footer class="bg-gray-900 dark:bg-black text-white pt-12 pb-8 transition-colors duration-300">
+    @php
+        $footerContent = app(\App\Services\Panel\PanelContentService::class)
+            ->getPublishedPayload('footer.copy', config('site_content.footer', []));
+    @endphp
+
     <div class="max-w-7xl mx-auto px-6">
         <div class="rounded-3xl bg-gradient-to-r from-red-700 via-red-600 to-yellow-500 p-6 md:p-8 mb-10 shadow-2xl">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                    <p class="text-white/85 text-sm uppercase tracking-[0.18em]">Atencion corporativa</p>
-                    <h3 class="text-2xl md:text-3xl font-extrabold mt-1">Hablemos de tu sucursal o facturacion</h3>
+                    <p class="text-white/85 text-sm uppercase tracking-[0.18em]">{{ $footerContent['cta_label'] ?? 'Atencion corporativa' }}</p>
+                    <h3 class="text-2xl md:text-3xl font-extrabold mt-1">{{ $footerContent['cta_title'] ?? 'Hablemos de tu sucursal o facturacion' }}</h3>
+                    <p class="mt-2 text-sm text-white/85">
+                        El uso de este canal y del portal de factura implica la aceptacion del
+                        <a href="{{ route('privacy') }}" class="underline decoration-white/60 hover:text-yellow-100">Aviso de privacidad</a>.
+                    </p>
                 </div>
                 <a
                     href="{{ route('home') }}#contacto"
@@ -19,7 +28,7 @@
             <div>
                 <img src="{{ asset('images/logo.png') }}" alt="Pollo Feliz" class="brand-logo w-20 mb-4">
                 <p class="text-gray-300 dark:text-gray-400 leading-relaxed">
-                    Sabor, tradición y calidad para toda la familia. Comprometidos con un servicio cálido en cada sucursal.
+                    {{ $footerContent['brand_description'] ?? 'Sabor, tradicion y calidad para toda la familia.' }}
                 </p>
             </div>
 
@@ -31,7 +40,8 @@
                     <li><a href="{{ route('home') }}#menu" class="hover:text-yellow-400">Menú</a></li>
                     <li><a href="{{ route('home') }}#promociones" class="hover:text-yellow-400">Promociones</a></li>
                     <li><a href="{{ route('home') }}#acerca" class="hover:text-yellow-400">Acerca de</a></li>
-                    <li><a href="https://facturacion.galasistemas.com/" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400">Factura</a></li>
+                    <li><a href="{{ config('external_links.billing.url') }}" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400">Factura</a></li>
+                    <li><a href="{{ route('privacy') }}" class="hover:text-yellow-400">Aviso de privacidad</a></li>
                     <li><a href="{{ route('vacancies.index') }}" class="hover:text-yellow-400">Bolsa de trabajo</a></li>
                     <li><a href="{{ route('home') }}#contacto" class="hover:text-yellow-400">Contáctanos</a></li>
                 </ul>
@@ -43,13 +53,13 @@
                     <p>Durango, México</p>
                     <p>
                         Tel:
-                        <a href="tel:+526181293730" class="hover:text-yellow-400">(618) 129 3730</a>
+                        <a href="tel:{{ config('external_links.contact.phone_e164') }}" class="hover:text-yellow-400">{{ config('external_links.contact.phone_display') }}</a>
                     </p>
                     <p>Ext. RH: 2001</p>
                     <p>Ext. Facturación: 2002</p>
                     <p>
                         Email:
-                        <a href="mailto:contacto@pollofeliz.com" class="hover:text-yellow-400">contacto@pollofeliz.com</a>
+                        <a href="mailto:{{ config('external_links.contact.email') }}" class="hover:text-yellow-400">{{ config('external_links.contact.email') }}</a>
                     </p>
                 </div>
             </div>
@@ -57,9 +67,9 @@
             <div>
                 <h4 class="font-bold text-lg mb-4 text-yellow-400">Síguenos</h4>
                 <div class="flex flex-col gap-2 text-gray-300 dark:text-gray-400">
-                    <a href="https://www.facebook.com/pollofelizdurango/?locale=es_LA" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400">Facebook</a>
-                    <a href="https://www.instagram.com/pollofeliz.durango/" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400">Instagram</a>
-                    <a href="#" class="hover:text-yellow-400">WhatsApp</a>
+                    <a href="{{ config('external_links.social.facebook') }}" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400">Facebook</a>
+                    <a href="{{ config('external_links.social.instagram') }}" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400">Instagram</a>
+                    <a href="https://wa.me/{{ config('external_links.contact.phone_digits') }}?text={{ rawurlencode((string) config('external_links.whatsapp.default_message')) }}" target="_blank" rel="noopener noreferrer" class="hover:text-yellow-400">WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -69,3 +79,5 @@
         </div>
     </div>
 </footer>
+
+@include('partials.whatsapp-float')

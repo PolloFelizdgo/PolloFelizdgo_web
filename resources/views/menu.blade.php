@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú Completo | Pollo Feliz</title>
+    <title>Menú Completo | Pollo Feliz Durango</title>
+    <meta name="description" content="Explora el menú completo de Pollo Feliz Durango: pollos asados, combos, complementos, paquetes y bebidas para toda la familia.">
+    <meta property="og:title" content="Menú Completo | Pollo Feliz Durango">
+    <meta property="og:description" content="Conoce todos nuestros productos, combos y promociones para ordenar en tu sucursal Pollo Feliz más cercana.">
+    <meta property="og:image" content="{{ url('/images/portada.jpg') }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script>
@@ -25,7 +34,7 @@
             <a href="{{ route('home') }}" class="flex items-center gap-3">
                 <img
                     src="{{ asset('images/logo.png') }}"
-                    alt="Pollo Feliz"
+                    alt="Logotipo oficial de Pollo Feliz"
                     class="brand-logo w-12 h-12 sm:w-14 sm:h-14 object-contain"
                 >
                 <span class="text-lg sm:text-2xl font-extrabold text-red-600 dark:text-yellow-400">
@@ -62,6 +71,15 @@
                 </p>
             </div>
 
+            <div class="flex flex-wrap justify-center gap-3 mb-8" id="menuCategoryFilters">
+                <button type="button" class="menu-category-filter bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md" data-category="todos">Todos</button>
+                <button type="button" class="menu-category-filter bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-full text-sm font-semibold" data-category="pollos">Pollos</button>
+                <button type="button" class="menu-category-filter bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-full text-sm font-semibold" data-category="combos">Combos</button>
+                <button type="button" class="menu-category-filter bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-full text-sm font-semibold" data-category="paquetes">Paquetes</button>
+                <button type="button" class="menu-category-filter bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-full text-sm font-semibold" data-category="complementos">Complementos</button>
+                <button type="button" class="menu-category-filter bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-100 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-full text-sm font-semibold" data-category="bebidas">Bebidas</button>
+            </div>
+
             <div class="max-w-2xl mx-auto mb-12">
                 <div class="relative">
                     <input
@@ -79,10 +97,11 @@
             <div id="menuGrid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 @foreach($menuItems as $item)
                     <div
-                        class="menu-card card-soft border border-yellow-100 dark:border-gray-800 overflow-hidden transition-colors duration-300"
+                        class="menu-card reveal-on-scroll transition-all duration-700 card-soft border border-yellow-100 dark:border-gray-800 overflow-hidden transition-colors duration-300"
                         data-menu-name="{{ strtolower($item['name']) }}"
                         data-menu-description="{{ strtolower($item['description']) }}"
                         data-menu-price="{{ strtolower($item['price']) }}"
+                        data-menu-category="{{ strtolower($item['category'] ?? 'otros') }}"
                     >
                         <button
                             type="button"
@@ -92,12 +111,17 @@
                         >
                             <img
                                 src="{{ $item['image'] }}"
-                                alt="{{ $item['name'] }}"
+                                alt="{{ $item['name'] }} de Pollo Feliz"
                                 class="w-full h-56 object-cover cursor-pointer hover:scale-105 transition duration-500"
+                                loading="lazy"
+                                decoding="async"
                             >
                         </button>
 
                         <div class="p-6">
+                            <span class="inline-flex items-center rounded-full bg-yellow-100 dark:bg-gray-700 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-red-600 dark:text-yellow-300">
+                                {{ $item['category'] ?? 'otros' }}
+                            </span>
                             <h3 class="text-xl font-bold text-gray-900 dark:text-white">
                                 {{ $item['name'] }}
                             </h3>
@@ -160,36 +184,69 @@
             const searchInput = document.getElementById('menuSearchInput');
             const menuCards = document.querySelectorAll('.menu-card');
             const noResults = document.getElementById('menuNoResults');
+            const categoryButtons = document.querySelectorAll('.menu-category-filter');
+            let activeCategory = 'todos';
 
-            if (searchInput && menuCards.length && noResults) {
-                searchInput.addEventListener('input', () => {
-                    const query = searchInput.value.toLowerCase().trim();
-                    let visibleCount = 0;
+            // Aplica filtros combinados por texto y categoria en tiempo real.
+            const applyMenuFilters = () => {
+                const query = (searchInput?.value || '').toLowerCase().trim();
+                let visibleCount = 0;
 
-                    menuCards.forEach((card) => {
-                        const name = card.dataset.menuName || '';
-                        const description = card.dataset.menuDescription || '';
-                        const price = card.dataset.menuPrice || '';
+                menuCards.forEach((card) => {
+                    const name = card.dataset.menuName || '';
+                    const description = card.dataset.menuDescription || '';
+                    const price = card.dataset.menuPrice || '';
+                    const category = card.dataset.menuCategory || 'otros';
 
-                        const matches =
-                            name.includes(query) ||
-                            description.includes(query) ||
-                            price.includes(query);
+                    const matchesQuery =
+                        name.includes(query) ||
+                        description.includes(query) ||
+                        price.includes(query);
 
-                        if (matches) {
-                            card.classList.remove('hidden');
-                            visibleCount++;
-                        } else {
-                            card.classList.add('hidden');
-                        }
-                    });
+                    const matchesCategory = activeCategory === 'todos' || category === activeCategory;
 
-                    if (visibleCount === 0) {
-                        noResults.classList.remove('hidden');
+                    if (matchesQuery && matchesCategory) {
+                        card.classList.remove('hidden');
+                        visibleCount++;
                     } else {
-                        noResults.classList.add('hidden');
+                        card.classList.add('hidden');
                     }
                 });
+
+                noResults.classList.toggle('hidden', visibleCount !== 0);
+            };
+
+            const updateCategoryButtonStyles = () => {
+                categoryButtons.forEach((button) => {
+                    const isActive = button.dataset.category === activeCategory;
+
+                    button.classList.toggle('bg-red-600', isActive);
+                    button.classList.toggle('text-white', isActive);
+                    button.classList.toggle('shadow-md', isActive);
+
+                    button.classList.toggle('bg-white', !isActive);
+                    button.classList.toggle('dark:bg-gray-800', !isActive);
+                    button.classList.toggle('text-gray-700', !isActive);
+                    button.classList.toggle('dark:text-gray-100', !isActive);
+                    button.classList.toggle('border', !isActive);
+                    button.classList.toggle('border-gray-200', !isActive);
+                    button.classList.toggle('dark:border-gray-700', !isActive);
+                });
+            };
+
+            if (searchInput && menuCards.length && noResults && categoryButtons.length) {
+                searchInput.addEventListener('input', applyMenuFilters);
+
+                categoryButtons.forEach((button) => {
+                    button.addEventListener('click', () => {
+                        activeCategory = button.dataset.category || 'todos';
+                        updateCategoryButtonStyles();
+                        applyMenuFilters();
+                    });
+                });
+
+                updateCategoryButtonStyles();
+                applyMenuFilters();
             }
 
             const menuImageTriggers = document.querySelectorAll('.menu-image-trigger');
