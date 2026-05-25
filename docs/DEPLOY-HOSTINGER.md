@@ -30,6 +30,33 @@ Las dos rutas que normalmente debes corregir dentro de `index.php` son:
 - `../vendor/autoload.php`
 - `../bootstrap/app.php`
 
+### 2.1 Modo public_html (caso tipico en Hostinger)
+
+Usa esta estructura final:
+- `~/domains/TU-DOMINIO/public_html` (solo archivos publicos)
+- `~/apps/pollofeliz` (codigo Laravel completo)
+
+Dentro de `public_html` debes tener:
+- `index.php`
+- `.htaccess`
+- `build/` (si compilaste assets)
+- `images/`, `favicon.ico`, y el resto de archivos estaticos de `public/`
+
+Dentro de `~/apps/pollofeliz` deben existir:
+- `app/`, `bootstrap/`, `config/`, `database/`, `resources/`, `routes/`, `storage/`, `vendor/`
+- `.env`
+
+Flujo recomendado en SSH:
+1. Clona el repo en `~/apps/pollofeliz`.
+2. Copia el contenido de `~/apps/pollofeliz/public/` hacia `~/domains/TU-DOMINIO/public_html/`.
+3. Edita `~/domains/TU-DOMINIO/public_html/index.php` para apuntar al proyecto real.
+
+Si tu carpeta real es `~/apps/pollofeliz`, el `index.php` de `public_html` debe apuntar a:
+- `require '/home/TU_USUARIO/apps/pollofeliz/vendor/autoload.php';`
+- `$app = require_once '/home/TU_USUARIO/apps/pollofeliz/bootstrap/app.php';`
+
+No dejes rutas relativas ambiguas cuando uses `public_html`; usa rutas absolutas.
+
 ## 3. Subir codigo
 
 Opciones:
@@ -76,6 +103,12 @@ Ese comando ejecuta:
 
 Si tu plan no tiene Node.js, genera el build en tu computadora con `npm run build` y sube tambien `public/build`.
 
+Despues de copiar `public/` en `public_html`, vuelve a ejecutar:
+- `php artisan optimize:clear`
+- `php artisan config:cache`
+- `php artisan route:cache`
+- `php artisan view:cache`
+
 ## 6. Permisos importantes
 
 Asegura permisos de escritura para:
@@ -88,12 +121,24 @@ Si usas Linux:
 chmod -R 775 storage bootstrap/cache
 ```
 
+Adicional para imagenes subidas desde panel:
+
+```bash
+php artisan storage:link
+```
+
 ## 7. Cola y cron (si aplica)
 
 Para este proyecto se usa por defecto:
 - `QUEUE_CONNECTION=sync`
 
 Si en el futuro cambias a cola real (`database`, `redis`), configura worker y cron en Hostinger.
+
+Para tareas programadas de Laravel (recomendado):
+
+```bash
+* * * * * php /home/TU_USUARIO/apps/pollofeliz/artisan schedule:run >> /dev/null 2>&1
+```
 
 ## 8. Verificacion post-deploy
 
@@ -110,6 +155,7 @@ Checklist rapido:
 6. reCAPTCHA valida correctamente en dominio final
 7. Si aparece 404 de Hostinger, revisa el document root y `public_html/index.php`.
 8. Si no cargan assets, confirma que `public/build` subio completo y que `APP_URL` coincide con el dominio final.
+9. Si no cargan imagenes del panel, valida el enlace simbolico con `php artisan storage:link`.
 
 ## 9. Comandos utiles de mantenimiento
 
@@ -135,3 +181,9 @@ php artisan test
 
 4. Cambios no se reflejan:
 - ejecutar `php artisan optimize:clear`.
+
+5. Error 404 directo de Hostinger:
+- `public_html` no tiene el `index.php` de Laravel, o rutas de `index.php` apuntan mal a `vendor` y `bootstrap`.
+
+6. Error SQLSTATE[HY000] [1045] o [2002]:
+- revisar `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` en `.env` y permisos del usuario MySQL.
