@@ -57,6 +57,9 @@ Si tu carpeta real es `~/apps/pollofeliz`, el `index.php` de `public_html` debe 
 
 No dejes rutas relativas ambiguas cuando uses `public_html`; usa rutas absolutas.
 
+En este repo ya tienes una plantilla lista para ese archivo en:
+- `docs/hostinger-public_html-index.php.example`
+
 ## 3. Subir codigo
 
 Opciones:

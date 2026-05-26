@@ -46,3 +46,5 @@ php artisan test
 ## Despliegue
 
 Consulta la guia de Hostinger antes de subir cambios a produccion.
+
+Si usas `public_html`, toma como base `docs/hostinger-public_html-index.php.example` para el `index.php` publico.
