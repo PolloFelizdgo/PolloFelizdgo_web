@@ -48,3 +48,4 @@ php artisan test
 Consulta la guia de Hostinger antes de subir cambios a produccion.
 
 Si usas `public_html`, toma como base `docs/hostinger-public_html-index.php.example` para el `index.php` publico.
+Tambien puedes usar `scripts/deploy-hostinger-public-html.sh` desde tu SSH de Hostinger.

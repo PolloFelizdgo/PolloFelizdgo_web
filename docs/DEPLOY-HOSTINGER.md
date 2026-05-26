@@ -51,6 +51,12 @@ Flujo recomendado en SSH:
 2. Copia el contenido de `~/apps/pollofeliz/public/` hacia `~/domains/TU-DOMINIO/public_html/`.
 3. Edita `~/domains/TU-DOMINIO/public_html/index.php` para apuntar al proyecto real.
 
+Si quieres automatizar ese flujo, usa el script del repo:
+
+```bash
+bash scripts/deploy-hostinger-public-html.sh /home/TU_USUARIO/apps/pollofeliz /home/TU_USUARIO/domains/TU-DOMINIO/public_html php
+```
+
 Si tu carpeta real es `~/apps/pollofeliz`, el `index.php` de `public_html` debe apuntar a:
 - `require '/home/TU_USUARIO/apps/pollofeliz/vendor/autoload.php';`
 - `$app = require_once '/home/TU_USUARIO/apps/pollofeliz/bootstrap/app.php';`
@@ -59,6 +65,7 @@ No dejes rutas relativas ambiguas cuando uses `public_html`; usa rutas absolutas
 
 En este repo ya tienes una plantilla lista para ese archivo en:
 - `docs/hostinger-public_html-index.php.example`
+- `scripts/deploy-hostinger-public-html.sh`
 
 ## 3. Subir codigo
 
